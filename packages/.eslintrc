@@ -1,0 +1,42 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts"],
+      "env": {
+        "jest": true
+      }
+    }
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "settings": {
+    "import/external-module-folders": ["node_modules"],
+    "import/extensions": [".ts", ".tsx", ".js", ".jsx"]
+  },
+  "rules": {
+    //"off" or 0
+    //"warn" or 1
+    //"error" or 2
+    "semi": "error",
+    "no-console": "error",
+    "no-alert": "error",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-unused-vars": "off"
+  }
+}

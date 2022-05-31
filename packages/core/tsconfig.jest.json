@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": true,
+    "jsx": "react"
+  },
+  "include": ["./src/*"],
+  "exclude": ["./packages/*/es", "./packages/*/lib"]
+}

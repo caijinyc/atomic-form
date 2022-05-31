@@ -1,0 +1,25 @@
+{
+  "name": "@atomic-form/core",
+  "version": "1.0.0",
+  "description": "core module",
+  "keywords": [
+    "atomic-form"
+  ],
+  "author": "jin <me@caijin.tech>",
+  "main": "src/index.ts",
+  "files": [
+    "lib",
+    "es"
+  ],
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "build": "rimraf -rf lib es && npm run build:cjs && npm run build:esm",
+    "build:esm": "tsc  --outDir es -m es2015 --skipLibCheck true",
+    "build:cjs": "tsc  --outDir lib -m commonjs --skipLibCheck true"
+  },
+  "dependencies": {
+    "@atomic-form/shared": "1.0.0",
+    "@vue/reactivity": "3.2.12",
+    "async-validator": "4.0.3"
+  }
+}
