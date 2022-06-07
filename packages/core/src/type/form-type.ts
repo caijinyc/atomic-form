@@ -1,4 +1,5 @@
 import { RuleItem } from "async-validator/dist-types/interface";
+import { IStateType } from "../shared/get-state";
 
 export interface IFormState<ValueType = any> {
   value: ValueType;
@@ -40,3 +41,50 @@ export type ErrorType<V = any> = {
   value?: V;
 };
 
+export type IStop = () => void;
+
+export type IResponseFormState<V, StateType extends any, W> = StateType extends IStateType
+  ? W extends false
+    ? IFormState<V>[StateType]
+    : Record<string, IFormState<any>[StateType] | undefined>
+  : StateType extends IStateType[]
+    ? W extends false
+      ? Pick<IFormState<V>, StateType[number]>
+      : Record<string, Pick<IFormState<V>, StateType[number]> | undefined>
+    : W extends false
+      ? IFormState<V>
+      : Record<string, IFormState<any> | undefined>;
+
+export type IWatchStateChangeCallback<V, StateType extends any, W> = (
+  state: IResponseFormState<V, StateType, W>,
+) => void;
+
+export type ICallbackBaseOptions = {
+  /**
+   * @default false
+   * 回调函数是否需要立即执行
+   */
+  immediate?: boolean;
+  /**
+   * @default false
+   * 默认多个同步更改只会触发一次更新
+   * 当 sync 设置为 true 时，每次更改都会触发更新
+   */
+  sync?: boolean;
+};
+
+export type IWatchStateChangeOptions<W extends boolean = false, State = any> = {
+  /**
+   * TODO WIP
+   * @default false
+   * 观察所有子节点 state 数据变更
+   */
+  withAllChildren?: W;
+  /**
+   * @default true
+   * 当节点值触发更新时，是否需要对 preState, curState 进行 diff
+   * 当 compare 为 true 时，会使用 [dequal](https://github.com/lukeed/dequal) 进行 diff
+   * 当 compare 为 Function 时，返回值为 true 时才会触发更新 / callback 执行
+   */
+  compare?: boolean | ((preState: State, curState: State) => boolean);
+} & ICallbackBaseOptions;

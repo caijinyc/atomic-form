@@ -1,41 +1,54 @@
 import { computed, ref, Ref } from "@vue/reactivity";
 import { FORM_DEFAULT_VALUE } from "../shared/constants";
-import { IFormState } from "../type/form-type";
+import { IFormState, IStop, IResponseFormState, IWatchStateChangeCallback, IWatchStateChangeOptions } from "../type/form-type";
 import { clone, isValid } from "@atomic-form/shared";
 import { getIn, setIn } from "../shared/path";
 import { IFormAddress } from "../type";
+import { watch } from "../watch";
+import { getState, IStateType } from "../shared/get-state";
+import { buildWatchStateChange } from "../shared/watch-state";
 
-function generateID (form: FormAtom) {
+let countMap: Record<string, number> = {};
+let rootFormCount = 0;
 
+function generateFormNodeUUID (form: FormAtom) {
+  if (countMap[form.root.uuid]) {
+    countMap[form.root.uuid]++;
+  } else {
+    countMap[form.root.uuid] = 1;
+  }
+  return countMap[form.root.uuid];
 }
+
+export type DisposeChildValueType<T> = keyof T extends never ? Partial<Exclude<T, void>> : T;
 
 class FormState<ValueType extends any> {
   initialValue: Ref<ValueType> = ref(FORM_DEFAULT_VALUE.initialValue)
   value: Ref<ValueType> = ref(FORM_DEFAULT_VALUE.initialValue)
 
-  label: Ref<any> = ref(FORM_DEFAULT_VALUE.label);
-  visible: Ref<boolean> = ref(FORM_DEFAULT_VALUE.visible);
-  disabled: Ref<boolean> = ref(FORM_DEFAULT_VALUE.disabled);
+  label: Ref<IFormState["label"]> = ref(FORM_DEFAULT_VALUE.label);
+  visible: Ref<IFormState["visible"]> = ref(FORM_DEFAULT_VALUE.visible);
+  disabled: Ref<IFormState["disabled"]> = ref(FORM_DEFAULT_VALUE.disabled);
 
-  initialized: Ref<boolean> = ref(FORM_DEFAULT_VALUE.initialized);
-  modified: Ref<boolean> = ref(FORM_DEFAULT_VALUE.modified);
-  required: Ref<boolean | undefined> = ref(FORM_DEFAULT_VALUE.required);
+  initialized: Ref<IFormState["initialized"]> = ref(FORM_DEFAULT_VALUE.initialized);
+  modified: Ref<IFormState["modified"]> = ref(FORM_DEFAULT_VALUE.modified);
+  required: Ref<IFormState["required"]> = ref(FORM_DEFAULT_VALUE.required);
   rules: Ref<IFormState["rules"]> = ref(FORM_DEFAULT_VALUE.rules);
   error: Ref<IFormState["error"]> = ref(FORM_DEFAULT_VALUE.error);
-  disableValidate: Ref<boolean> = ref(FORM_DEFAULT_VALUE.disableValidate);
+  disableValidate: Ref<IFormState["disableValidate"]> = ref(FORM_DEFAULT_VALUE.disableValidate);
 
   // WIP
-  // validating: Ref<boolean> = ref(FORM_DEFAULT_VALUE.validating);
+  validating: Ref<IFormState["validating"]> = ref(FORM_DEFAULT_VALUE.validating);
   // component: Ref<IComponent | undefined> = ref(undefined);
   // decorator: Ref<IComponent | undefined> = ref(undefined);
 }
 
-
-class FormAtom<ValueType extends any = any> extends FormState<ValueType>{
+export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<ValueType>> extends FormState<ValueType>{
   isRoot: boolean = false;
   root: FormAtom;
-  parent?: FormAtom;
+  parent: FormAtom;
   address: IFormAddress;
+  uuid: string;
 
   constructor(props: {
     initialValue?: ValueType;
@@ -49,22 +62,27 @@ class FormAtom<ValueType extends any = any> extends FormState<ValueType>{
       // it means this is a sub form
       this.root = props.rootNode;
       this.parent = props.parentNode;
+      this.uuid = `${this.root.uuid}-${generateFormNodeUUID(this)}`;
 
-      const pathArr = [...this.parent.address.pathArray, props.path];
+      const pathArray = [...this.parent.address.pathArray, props.path];
       this.address = {
-        pathArray: pathArr,
-        pathString: pathArr.join('/'),
+        pathArray,
+        pathString: pathArray.join('/'),
       };
+
       this.value = computed({
         get: () => getIn(this.address.pathArray, this.root.value.value),
         set: (val) => {
           setIn(this.address.pathArray, this.root.value.value, val);
         },
       });
+
     } else {
       // it means this is a root form, so have to initialize the root form
-      this.root = this;
       this.isRoot = true;
+      this.uuid = `ROOT-${rootFormCount++}`;
+      this.root = this;
+      this.parent = this;
       this.initialValue = ref(isValid(props.initialValue) ? props.initialValue : FORM_DEFAULT_VALUE.initialValue);
       this.value = ref(isValid(props.value) ? props.value : clone(this.initialValue));
 
@@ -73,8 +91,52 @@ class FormAtom<ValueType extends any = any> extends FormState<ValueType>{
         pathString: '__ROOT__',
       };
     }
+
+    watch(
+      () => this.initialValue.value,
+      (value) => {
+        if (
+          !this.state.initialized &&
+          isValid(this.state.initialValue) &&
+          !isValid(this.state.value)
+        ) {
+        }
+      },
+    );
   }
 
+  get state (): IFormState<ValueType> {
+    return getState(this);
+  }
+
+  watchState<
+    WithAllChildren extends boolean = false,
+    State = IResponseFormState<DV, void, WithAllChildren>,
+    >(
+    callback: IWatchStateChangeCallback<DV, void, WithAllChildren>,
+    options?: IWatchStateChangeOptions<WithAllChildren, State>,
+  ): IStop;
+  watchState<
+    StateType extends IStateType,
+    WithAllChildren extends boolean = false,
+    State = IResponseFormState<DV, StateType, WithAllChildren>,
+    >(
+    stateType: StateType,
+    callback: IWatchStateChangeCallback<DV, StateType, WithAllChildren>,
+    options?: IWatchStateChangeOptions<WithAllChildren, State>,
+  ): IStop;
+  watchState<
+    StateType extends IStateType[],
+    WithAllChildren extends boolean = false,
+    State = IResponseFormState<DV, StateType, WithAllChildren>,
+    >(
+    stateType: StateType,
+    callback: IWatchStateChangeCallback<DV, StateType, WithAllChildren>,
+    options?: IWatchStateChangeOptions<WithAllChildren, State>,
+  ): IStop;
+  watchState(...params: any): any {
+    return buildWatchStateChange(this, ...params);
+  }
 }
 
 //

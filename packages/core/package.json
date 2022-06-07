@@ -20,6 +20,7 @@
   "dependencies": {
     "@atomic-form/shared": "1.0.0",
     "@vue/reactivity": "3.2.12",
+    "@vue/shared": "3.2.12",
     "async-validator": "4.0.3"
   }
 }
