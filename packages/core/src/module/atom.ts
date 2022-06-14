@@ -2,13 +2,17 @@ import type { Ref } from '@vue/reactivity'
 import { computed, ref } from '@vue/reactivity'
 import { clone, isValid } from '@atomic-form/shared'
 import { FORM_DEFAULT_VALUE } from '../shared/constants'
-import type { IFormState, IResponseFormState, IStop, IWatchStateChangeCallback, IWatchStateChangeOptions } from '../type/form-type'
+import type {
+  IFormState,
+  IPartialFormState, IResponseFormState, IStop, IWatchStateChangeCallback, IWatchStateChangeOptions,
+} from '../type/form-type'
 import { getIn, setIn } from '../shared/path'
 import type { IFormAddress } from '../type'
 import { watch } from '../watch'
 import type { IStateType } from '../shared/get-state'
 import { getState } from '../shared/get-state'
 import { buildWatchStateChange } from '../shared/watch-state'
+import { buildSetState } from '../shared'
 
 const countMap: Record<string, number> = {}
 let rootFormCount = 0
@@ -24,7 +28,7 @@ function generateFormNodeUUID(form: FormAtom) {
 
 export type DisposeChildValueType<T> = keyof T extends never ? Partial<Exclude<T, void>> : T
 
-class FormState<ValueType extends any> {
+class FormState<ValueType> {
   initialValue: Ref<ValueType> = ref(FORM_DEFAULT_VALUE.initialValue)
   value: Ref<ValueType> = ref(FORM_DEFAULT_VALUE.initialValue)
 
@@ -55,7 +59,7 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
   constructor(props: {
     initialValue?: ValueType
     value?: ValueType
-    path: string | number
+    path?: string | number
     rootNode?: FormAtom
     parentNode?: FormAtom
   }) {
@@ -86,7 +90,7 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
       this.root = this
       this.parent = this
       this.initialValue = ref(isValid(props.initialValue) ? props.initialValue : FORM_DEFAULT_VALUE.initialValue)
-      this.value = ref(isValid(props.value) ? props.value : clone(this.initialValue))
+      this.value = ref(isValid(props.value) ? props.value : clone(this.initialValue.value))
 
       this.address = {
         pathArray: ['__ROOT__'],
@@ -101,9 +105,10 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
           !this.state.initialized
           && isValid(this.state.initialValue)
           && !isValid(this.state.value)
-        ) {
-        }
+        )
+          this.value.value = clone(this.initialValue.value)
       },
+      { immediate: true, flush: 'sync' },
     )
   }
 
@@ -111,16 +116,14 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
     return getState(this)
   }
 
-  watch<
-    WithAllChildren extends boolean = false,
+  watch<WithAllChildren extends boolean = false,
     State = IResponseFormState<DV, void, WithAllChildren>,
   >(
     callback: IWatchStateChangeCallback<DV, void, WithAllChildren>,
     options?: IWatchStateChangeOptions<WithAllChildren, State>,
   ): IStop
 
-  watch<
-    StateType extends IStateType,
+  watch<StateType extends IStateType,
     WithAllChildren extends boolean = false,
     State = IResponseFormState<DV, StateType, WithAllChildren>,
   >(
@@ -129,8 +132,7 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
     options?: IWatchStateChangeOptions<WithAllChildren, State>,
   ): IStop
 
-  watch<
-    StateType extends IStateType[],
+  watch<StateType extends IStateType[],
     WithAllChildren extends boolean = false,
     State = IResponseFormState<DV, StateType, WithAllChildren>,
   >(
@@ -141,6 +143,12 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
 
   watch(...params: any): any {
     return buildWatchStateChange(this, ...params)
+  }
+
+  setState(
+    payload: IPartialFormState<ValueType> | ((oldState: IFormState<ValueType>) => IPartialFormState<ValueType>),
+  ): this {
+    return buildSetState(this, payload)
   }
 }
 

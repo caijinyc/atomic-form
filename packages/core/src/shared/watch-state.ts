@@ -19,7 +19,7 @@ export const buildWatchStateChange = (form: FormAtom, ...params: any): IStop => 
 
   // batch update at the same time will emit callback function only once
   const originCb = isFn(params[0]) ? params[0] : params[1]
-  const cb = options.sync ? originCb : buildLazyCallback(originCb)
+  const cb = originCb
 
   let source: () => any
 
@@ -32,5 +32,5 @@ export const buildWatchStateChange = (form: FormAtom, ...params: any): IStop => 
     }
   }
 
-  return watch(source, cb, { deep: true, immediate: options.immediate })
+  return watch(source, cb, { deep: true, immediate: options.immediate, flush: options.sync ? 'sync' : 'pre' })
 }

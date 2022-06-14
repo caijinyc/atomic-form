@@ -21,6 +21,8 @@ export interface IFormState<ValueType = any> {
   validating: boolean
 }
 
+export type IPartialFormState<V> = Partial<IFormState<V>>
+
 export interface ErrorType<V = any> {
   status: 'success' | 'error' | 'warning'
   help: string[]

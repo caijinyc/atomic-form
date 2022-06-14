@@ -105,8 +105,8 @@ test('should work with flush pre', async() => {
 
   expect(counter.value).toBe(100)
   expect(triggered).toBe(0)
-  expect(fn).toHaveBeenCalledTimes(0)
 
+  expect(fn).toHaveBeenCalledTimes(0)
   await nextTick()
   expect(fn).toHaveBeenCalledTimes(1)
 
