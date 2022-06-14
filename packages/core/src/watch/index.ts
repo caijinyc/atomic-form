@@ -1,4 +1,5 @@
 // ported from https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts by Evan You
+// forked from https://github.com/vue-reactivity/watch by
 
 import {
   ComputedRef,
@@ -111,7 +112,7 @@ export function watch<T = any>(
 function doWatch(
   source: WatchSource | WatchSource[] | WatchEffect,
   cb: WatchCallback | null,
-  { immediate, deep }: WatchOptions = {},
+  { immediate, deep, flush }: WatchOptions = {},
 ): WatchStopHandle {
   let getter: () => any;
   if (isArray(source) && !isReactive(source)) {
@@ -185,34 +186,34 @@ function doWatch(
 
   let scheduler: EffectScheduler = job;
 
-  // if (flush === 'sync') {
-  //   scheduler = job as any; // the scheduler function gets called directly
+  if (flush === 'sync') {
+    scheduler = job as any; // the scheduler function gets called directly
+  }
+  // else if (flush === 'post') {
+  //   scheduler = () => queuePostRenderEffect(job, instance && instance.suspense)
   // }
-  // // else if (flush === 'post') {
-  // //   scheduler = () => queuePostRenderEffect(job, instance && instance.suspense)
-  // // }
-  // else {
-  //   // default: 'pre'
-  //   // 调度器实现
-  //   const queue: Function[] = [];
-  //   let isFlushing = false;
-  //   scheduler = () => {
-  //     if (!queue.includes(job)) queue.push(job);
-  //     if (!isFlushing) {
-  //       isFlushing = true;
-  //       Promise.resolve().then(() => {
-  //         let fn;
-  //         try {
-  //           while ((fn = queue.shift())) {
-  //             fn();
-  //           }
-  //         } finally {
-  //           isFlushing = false;
-  //         }
-  //       });
-  //     }
-  //   };
-  // }
+  else {
+    // default: 'pre'
+    // 调度器实现
+    const queue: Function[] = [];
+    let isFlushing = false;
+    scheduler = () => {
+      if (!queue.includes(job)) queue.push(job);
+      if (!isFlushing) {
+        isFlushing = true;
+        Promise.resolve().then(() => {
+          let fn;
+          try {
+            while ((fn = queue.shift())) {
+              fn();
+            }
+          } finally {
+            isFlushing = false;
+          }
+        });
+      }
+    };
+  }
 
   // const runner = effect(getter, {
   //   lazy: true,

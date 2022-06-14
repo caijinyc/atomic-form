@@ -109,14 +109,14 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
     return getState(this);
   }
 
-  watchState<
+  watch<
     WithAllChildren extends boolean = false,
     State = IResponseFormState<DV, void, WithAllChildren>,
     >(
     callback: IWatchStateChangeCallback<DV, void, WithAllChildren>,
     options?: IWatchStateChangeOptions<WithAllChildren, State>,
   ): IStop;
-  watchState<
+  watch<
     StateType extends IStateType,
     WithAllChildren extends boolean = false,
     State = IResponseFormState<DV, StateType, WithAllChildren>,
@@ -125,7 +125,7 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
     callback: IWatchStateChangeCallback<DV, StateType, WithAllChildren>,
     options?: IWatchStateChangeOptions<WithAllChildren, State>,
   ): IStop;
-  watchState<
+  watch<
     StateType extends IStateType[],
     WithAllChildren extends boolean = false,
     State = IResponseFormState<DV, StateType, WithAllChildren>,
@@ -134,7 +134,7 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
     callback: IWatchStateChangeCallback<DV, StateType, WithAllChildren>,
     options?: IWatchStateChangeOptions<WithAllChildren, State>,
   ): IStop;
-  watchState(...params: any): any {
+  watch(...params: any): any {
     return buildWatchStateChange(this, ...params);
   }
 }
