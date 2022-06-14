@@ -1,3 +1,7 @@
-# Atomic Form
+<h1 align="center">
+Atomic Form
+</h1>
 
-Atomic-Form is an atom-first, high-performance Form solution.
+<p align="center">
+Atom-first, High-performance Form solution.
+</p>
