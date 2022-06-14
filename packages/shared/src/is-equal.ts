@@ -1,3 +1,3 @@
-import { dequal } from 'dequal/lite';
+import { dequal } from 'dequal/lite'
 
-export const isEqual = dequal;
+export const isEqual = dequal

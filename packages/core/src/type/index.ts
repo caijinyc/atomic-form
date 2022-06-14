@@ -1,4 +1,4 @@
 export interface IFormAddress {
-  pathArray: (string | number)[];
-  pathString: string;
+  pathArray: (string | number)[]
+  pathString: string
 }

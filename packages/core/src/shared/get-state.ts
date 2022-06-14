@@ -1,7 +1,7 @@
-import { IFormState } from "../type/form-type";
-import { FormAtom } from "../module/atom";
+import type { IFormState } from '../type/form-type'
+import type { FormAtom } from '../module/atom'
 
-export type IStateType = keyof IFormState;
+export type IStateType = keyof IFormState
 
 export const getState = <StateType extends IStateType | IStateType[]>(
   formAtom: FormAtom,
@@ -13,14 +13,15 @@ export const getState = <StateType extends IStateType | IStateType[]>(
     : IFormState<any> => {
   if (stateType) {
     if (Array.isArray(stateType)) {
-      const res: any = {};
+      const res: any = {}
       stateType.forEach((type) => {
-        res[type] = formAtom[type].value;
-      });
-      Object.keys(stateType);
-      return res;
-    } else {
-      return formAtom[stateType as IStateType].value;
+        res[type] = formAtom[type].value
+      })
+      Object.keys(stateType)
+      return res
+    }
+    else {
+      return formAtom[stateType as IStateType].value
     }
   }
   return {
@@ -37,6 +38,5 @@ export const getState = <StateType extends IStateType | IStateType[]>(
     modified: formAtom.modified.value,
     required: formAtom.required.value,
     // decorator: fc.decorator.value,
-  } as any;
-};
-
+  } as any
+}

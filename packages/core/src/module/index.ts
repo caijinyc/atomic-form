@@ -1,1 +1,1 @@
-export { FormAtom } from './atom';
+export { FormAtom } from './atom'

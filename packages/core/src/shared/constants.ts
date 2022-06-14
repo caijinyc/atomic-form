@@ -1,6 +1,6 @@
-import { IFormState } from "../type/form-type";
+import type { IFormState } from '../type/form-type'
 
-export const FORM_DEFAULT_VALUE: Omit<IFormState, 'value'>= {
+export const FORM_DEFAULT_VALUE: Omit<IFormState, 'value'> = {
   visible: true,
   disableValidate: false,
   disabled: false,
@@ -13,4 +13,4 @@ export const FORM_DEFAULT_VALUE: Omit<IFormState, 'value'>= {
   rules: undefined,
   error: undefined,
   initialValue: undefined,
-};
+}
