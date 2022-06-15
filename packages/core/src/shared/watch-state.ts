@@ -1,7 +1,7 @@
 import { isFn, isPlainObj } from '@atomic-form/shared'
-import type { FormAtomBase } from '../module/atom'
 import type { IStop, IWatchStateChangeOptions } from '../type/form-type'
 import { watch } from '../watch'
+import type { FormAtomBase } from '../module/base'
 import type { IStateType } from './get-state'
 import { getState } from './get-state'
 import { buildLazyCallback } from './index'

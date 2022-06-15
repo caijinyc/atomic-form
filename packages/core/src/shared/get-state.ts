@@ -1,5 +1,5 @@
 import type { IFormState } from '../type/form-type'
-import type { FormAtomBase } from '../module/atom'
+import type { FormAtomBase } from '../module/base'
 
 export type IStateType = keyof IFormState
 

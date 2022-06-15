@@ -68,3 +68,22 @@ test('should works watch children value', () => {
   expect(fn).toHaveBeenCalledWith({ foo: { name: 'jerry', age: 0 } })
   expect(fn).toHaveBeenCalledTimes(1)
 })
+
+test('should works stop watch', () => {
+  const form = new FormAtom<{
+    foo: {
+      name: string
+      age: number
+    }
+  }>({
+    initialValue: { foo: { name: 'tom', age: 0 } },
+  })
+  const fn = vitest.fn()
+  const name = form.node('foo').node('name')
+  form.watch('value', (v) => {
+    fn(v)
+  }, { sync: true })
+  form.stopWatch()
+  name.setState({ value: 'jerry' })
+  expect(fn).toHaveBeenCalledTimes(0)
+})
