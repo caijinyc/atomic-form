@@ -94,4 +94,4 @@ export type IWatchStateChangeOptions<W extends boolean = false, State = any> = {
 } & ICallbackBaseOptions
 
 export type AtomType = 'normal' | 'list'
-export type IForm = FormAtom | FormAtomArray
+export type IForm = FormAtom | FormAtomArray<any, any, any>

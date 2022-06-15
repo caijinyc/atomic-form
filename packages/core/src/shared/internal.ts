@@ -2,7 +2,6 @@ import { flatArray, isArr } from '@atomic-form/shared'
 import type { AtomType, IForm, IPartialFormState } from '../type/form-type'
 import { FormAtom } from '../module'
 import { FormAtomArray } from '../module/array'
-import type { FormAtomBase } from '../module/base'
 import type { IFormAddress } from '../type'
 
 export const generatePathString = (addressArr: IFormAddress['pathArray']) => addressArr.join('/')
@@ -27,7 +26,7 @@ const resetFormArrayChildrenAddress = (form: FormAtomArray) => {
 }
 
 export const spliceArrayChildren = (
-  form: FormAtomArray,
+  form: FormAtomArray<any, any, any>,
   // form: any,
   startIndex: number,
   deleteCount: number,

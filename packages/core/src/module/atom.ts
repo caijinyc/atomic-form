@@ -1,6 +1,7 @@
 import { buildGetAllChildren, buildNode } from '../shared/internal'
 import type { AtomType, IForm } from '../type/form-type'
 import { FormAtomBase } from './base'
+import type { FormAtomArray } from './array'
 
 export type ProcessChildValueType<T> = keyof T extends never ? Partial<Exclude<T, void>> : T
 
@@ -14,10 +15,11 @@ export interface FormProps<Value = any> {
 
 export class FormAtom<Value = any, ProcessedValue = ProcessChildValueType<Value>> extends FormAtomBase<Value> {
   children: Record<keyof ProcessedValue, FormAtom> = {} as any
+
   node<
     Path extends Exclude<keyof ProcessedValue, Symbol>,
     Type extends AtomType = 'normal',
-  >(path: Path, type?: Type): Type extends 'list' ? FormAtom<ProcessedValue[Path]> : FormAtom<ProcessedValue[Path]> {
+  >(path: Path, type?: Type): Type extends 'list' ? FormAtomArray<ProcessedValue[Path]> : FormAtom<ProcessedValue[Path]> {
     return buildNode(this, path, type)
   }
 

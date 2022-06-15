@@ -1,6 +1,7 @@
 import { shallowReactive } from '@vue/reactivity'
 import { isArr } from '@atomic-form/shared'
 import type { ElemOf, ExcludeVoidType } from '../type/util'
+import type { WatchOptions } from '../watch'
 import { watch } from '../watch'
 import { buildGetAllChildren, buildNode, spliceArrayChildren } from '../shared/internal'
 import type { AtomType, IForm } from '../type/form-type'
@@ -39,7 +40,17 @@ export class FormAtomArray<
           }
         }
       }
-    })
+    }, { immediate: true })
+  }
+
+  watchChildren(cb: (val: Array<IForm>) => void, options?: WatchOptions) {
+    return watch(
+      () => this.children.map(fc => fc.uuid),
+      () => {
+        cb(this.children)
+      },
+      options,
+    )
   }
 
   node<Type extends AtomType = 'normal',

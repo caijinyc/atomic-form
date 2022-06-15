@@ -41,7 +41,7 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
       this.parent = props.parentNode
       this.uuid = `${this.root.uuid}-${generateFormNodeUUID(this)}`
 
-      const pathArray = [...this.parent.address.pathArray, props.path || '']
+      const pathArray = [...this.parent.address.pathArray, props.path === undefined ? '' : props.path]
       this.address = {
         pathArray,
         pathString: generatePathString(pathArray),
