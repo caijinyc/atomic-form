@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest'
 import { reactive, ref } from '@vue/reactivity'
 import { nextTick } from '@atomic-form/shared'
-import { watch, watchEffect } from '../watch'
+import { watch, watchEffect } from './index'
 
 test('should work', () => {
   let triggered = 0

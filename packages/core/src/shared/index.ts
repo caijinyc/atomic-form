@@ -1,5 +1,5 @@
-import { clone, isFn, Keys, nextTick } from '@atomic-form/shared'
-import type { FormAtom } from '../module'
+import { Keys, clone, isFn, nextTick } from '@atomic-form/shared'
+import type { FormAtomBase } from '../module'
 import type { IFormState, IPartialFormState } from '../type/form-type'
 
 export const buildLazyCallback = (originCb: (...args: any) => any) => {
@@ -14,7 +14,7 @@ export const buildLazyCallback = (originCb: (...args: any) => any) => {
   }
 }
 
-export function buildSetState<V, F extends FormAtom>(
+export function buildSetState<V, F extends FormAtomBase>(
   form: F,
   payload: IPartialFormState<V> | ((oldState: IFormState<V>) => IPartialFormState<V>),
 ): F {

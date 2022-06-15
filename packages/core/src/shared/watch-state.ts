@@ -1,5 +1,5 @@
 import { isFn, isPlainObj } from '@atomic-form/shared'
-import type { FormAtom } from '../module/atom'
+import type { FormAtomBase } from '../module/atom'
 import type { IStop, IWatchStateChangeOptions } from '../type/form-type'
 import { watch } from '../watch'
 import type { IStateType } from './get-state'
@@ -10,7 +10,7 @@ const DEFAULT_OPTIONS: IWatchStateChangeOptions = {
   compare: true,
 }
 
-export const buildWatchStateChange = (form: FormAtom, ...params: any): IStop => {
+export const buildWatchStateChange = (form: FormAtomBase, ...params: any): IStop => {
   const stateType: IStateType | IStateType[] = isFn(params[0]) ? undefined : params[0]
   const options: IWatchStateChangeOptions = {
     ...DEFAULT_OPTIONS,

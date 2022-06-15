@@ -1,10 +1,10 @@
 import type { IFormState } from '../type/form-type'
-import type { FormAtom } from '../module/atom'
+import type { FormAtomBase } from '../module/atom'
 
 export type IStateType = keyof IFormState
 
 export const getState = <StateType extends IStateType | IStateType[]>(
-  formAtom: FormAtom,
+  formAtom: FormAtomBase,
   stateType?: StateType,
 ): StateType extends IStateType
   ? IFormState<any>[StateType]

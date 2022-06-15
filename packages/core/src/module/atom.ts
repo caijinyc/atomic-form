@@ -21,7 +21,7 @@ import { FormState } from './state'
 const countMap: Record<string, number> = {}
 let rootFormCount = 0
 
-function generateFormNodeUUID(form: FormAtom) {
+function generateFormNodeUUID(form: FormAtomBase) {
   if (countMap[form.root.uuid])
     countMap[form.root.uuid]++
   else
@@ -30,22 +30,24 @@ function generateFormNodeUUID(form: FormAtom) {
   return countMap[form.root.uuid]
 }
 
-export type DisposeChildValueType<T> = keyof T extends never ? Partial<Exclude<T, void>> : T
+export type ProcessChildValueType<T> = keyof T extends never ? Partial<Exclude<T, void>> : T
 
-export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<ValueType>> extends FormState<ValueType> {
+export interface FormProps<Value = any> {
+  initialValue?: Value
+  value?: Value
+  path?: string | number
+  rootNode?: FormAtomBase
+  parentNode?: FormAtomBase
+}
+
+export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Value>> extends FormState<Value> {
   isRoot = false
-  root: FormAtom
-  parent: FormAtom
+  root: FormAtomBase
+  parent: FormAtomBase
   address: IFormAddress
   uuid: string
 
-  constructor(props: {
-    initialValue?: ValueType
-    value?: ValueType
-    path?: string | number
-    rootNode?: FormAtom
-    parentNode?: FormAtom
-  }) {
+  constructor(props: FormProps<Value>) {
     super()
     if (props.rootNode && props.parentNode) {
       // it means this is a sub form
@@ -53,21 +55,22 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
       this.parent = props.parentNode
       this.uuid = `${this.root.uuid}-${generateFormNodeUUID(this)}`
 
-      const pathArray = [...this.parent.address.pathArray, props.path]
+      const pathArray = [...this.parent.address.pathArray, props.path || '']
       this.address = {
         pathArray,
         pathString: pathArray.join('/'),
       }
 
+      const removeRootAddress = this.address.pathArray.slice(1)
       this.value = computed({
-        get: () => getIn(this.address.pathArray, this.root.value.value),
+        get: () => getIn(removeRootAddress, this.root.value.value),
         set: (val) => {
-          setIn(this.address.pathArray, this.root.value.value, val)
+          setIn(removeRootAddress, this.root.value.value, val)
         },
       })
     }
     else {
-      // it means this is a root form, so have to initialize the root form
+      // root form, must initialize the root form
       this.isRoot = true
       this.uuid = `ROOT-${rootFormCount++}`
       this.root = this
@@ -95,32 +98,32 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
     )
   }
 
-  get state(): IFormState<ValueType> {
+  get state(): IFormState<Value> {
     return getState(this)
   }
 
   watch<WithAllChildren extends boolean = false,
-    State = IResponseFormState<DV, void, WithAllChildren>,
+    State = IResponseFormState<ProcessedValue, void, WithAllChildren>,
   >(
-    callback: IWatchStateChangeCallback<DV, void, WithAllChildren>,
+    callback: IWatchStateChangeCallback<ProcessedValue, void, WithAllChildren>,
     options?: IWatchStateChangeOptions<WithAllChildren, State>,
   ): IStop
 
   watch<StateType extends IStateType,
     WithAllChildren extends boolean = false,
-    State = IResponseFormState<DV, StateType, WithAllChildren>,
+    State = IResponseFormState<ProcessedValue, StateType, WithAllChildren>,
   >(
     stateType: StateType,
-    callback: IWatchStateChangeCallback<DV, StateType, WithAllChildren>,
+    callback: IWatchStateChangeCallback<ProcessedValue, StateType, WithAllChildren>,
     options?: IWatchStateChangeOptions<WithAllChildren, State>,
   ): IStop
 
   watch<StateType extends IStateType[],
     WithAllChildren extends boolean = false,
-    State = IResponseFormState<DV, StateType, WithAllChildren>,
+    State = IResponseFormState<ProcessedValue, StateType, WithAllChildren>,
   >(
     stateType: StateType,
-    callback: IWatchStateChangeCallback<DV, StateType, WithAllChildren>,
+    callback: IWatchStateChangeCallback<ProcessedValue, StateType, WithAllChildren>,
     options?: IWatchStateChangeOptions<WithAllChildren, State>,
   ): IStop
 
@@ -129,10 +132,25 @@ export class FormAtom<ValueType extends any = any, DV = DisposeChildValueType<Va
   }
 
   setState(
-    payload: IPartialFormState<ValueType> | ((oldState: IFormState<ValueType>) => IPartialFormState<ValueType>),
+    payload: IPartialFormState<Value> | ((oldState: IFormState<Value>) => IPartialFormState<Value>),
   ): this {
     return buildSetState(this, payload)
   }
 }
 
-//
+export class FormAtom<Value = any, ProcessedValue = ProcessChildValueType<Value>> extends FormAtomBase<Value> {
+  children: Record<keyof ProcessedValue, FormAtom> = {} as any
+  node<
+    Path extends Exclude<keyof ProcessedValue, Symbol>,
+    Type extends 'normal' | 'list' = 'normal',
+  >(path: Path, type?: Type): Type extends 'list' ? FormAtom<ProcessedValue[Path]> : FormAtom<ProcessedValue[Path]> {
+    if (!this.children[path]) {
+      this.children[path] = new FormAtom<Value, ProcessedValue>({
+        path,
+        rootNode: this.root,
+        parentNode: this,
+      })
+    }
+    return this.children[path] as FormAtom<ProcessedValue[Path]>
+  }
+}
