@@ -53,9 +53,12 @@ export class FormAtomArray<
     )
   }
 
-  node<Type extends AtomType = 'normal',
-  >(path: number, type?: Type): Type extends 'list' ? FormAtomArray<ProcessedListItem> : FormAtom<ProcessedListItem> {
-    return buildNode(this, path, type) as any
+  node(path: number): FormAtom<ProcessedListItem> {
+    return buildNode(this, path)
+  }
+
+  nodeArray(path: number): FormAtomArray<ProcessedListItem> {
+    return buildNode(this, path, 'list')
   }
 
   get allChildren(): IForm[] {

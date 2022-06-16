@@ -1,6 +1,7 @@
 import { expect, test, vitest } from 'vitest'
 import { nextTick } from '@atomic-form/shared'
-import { FormAtom } from '../module'
+import { FormAtom, createForm } from '../module'
+import { FormAtomArray } from '../module/array'
 
 test('node list should work', () => {
   const form = new FormAtom<{
@@ -8,7 +9,7 @@ test('node list should work', () => {
   }>({
     initialValue: { list: ['a', 'b'] },
   })
-  const item1 = form.node('list', 'list').node(0)
+  const item1 = form.nodeArray('list').node(0)
   expect(item1.state.value).toEqual('a')
 })
 
@@ -18,7 +19,7 @@ test('watch value change and add missing node', async() => {
   }>({
     initialValue: { arr: ['a', 'b'] },
   })
-  const arr = form.node('arr', 'list')
+  const arr = form.nodeArray('arr')
   expect(arr.children.length).toEqual(2)
   arr.setState({ value: ['a', 'b', 'c'] })
   await nextTick()
@@ -31,7 +32,7 @@ test('API: watchChildren', async() => {
   }>({
     initialValue: { arr: ['a', 'b'] },
   })
-  const arr = form.node('arr', 'list')
+  const arr = form.nodeArray('arr')
   const fn = vitest.fn()
   arr.watchChildren((children) => {
     fn()
@@ -39,4 +40,12 @@ test('API: watchChildren', async() => {
   expect(fn).not.toHaveBeenCalled()
   arr.node(2)
   expect(fn).toHaveBeenCalled()
+})
+
+test('create form use nodeArray', async() => {
+  const arrForm = createForm<Array<string>>({ initialValue: ['a', 'b'] })
+  expect(arrForm instanceof FormAtomArray).toBeTruthy()
+  expect(arrForm.node(0).state.value).toEqual('a')
+  arrForm.node(0).setState({ value: 'c' })
+  expect(arrForm.node(0).state.value).toEqual('c')
 })
