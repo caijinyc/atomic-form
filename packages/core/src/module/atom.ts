@@ -6,7 +6,7 @@ import type { FormAtomArray } from './array'
 export type ProcessChildValueType<T> = keyof T extends never ? Partial<Exclude<T, void>> : T
 
 export interface FormProps<Value = any> {
-  initialValue: Value
+  initialValue?: Value
   value?: Value
   path?: string | number
   rootNode?: FormAtomBase
