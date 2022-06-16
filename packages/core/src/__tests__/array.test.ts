@@ -26,6 +26,19 @@ test('watch value change and add missing node', async() => {
   expect(arr.children.length).toEqual(3)
 })
 
+test('watch value change and value.length < children.length', async() => {
+  const form = new FormAtom<{
+    arr: string[]
+  }>({
+    initialValue: { arr: ['a', 'b', 'c'] },
+  })
+  const arr = form.nodeArray('arr')
+  expect(arr.children.length).toEqual(3)
+  arr.setState({ value: ['c'] })
+  await nextTick()
+  expect(arr.children.length).toEqual(1)
+})
+
 test('API: watchChildren', async() => {
   const form = new FormAtom<{
     arr: string[]
