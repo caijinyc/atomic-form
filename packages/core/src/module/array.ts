@@ -77,4 +77,16 @@ export class FormAtomArray<
     )
     return this
   }
+
+  push(...itemsValue: ProcessedListItem[]) {
+    return this.splice(this.children.length, 0, ...itemsValue)
+  }
+
+  insert(startIndex: number, ...items: ProcessedListItem[]) {
+    return this.splice(startIndex, 0, ...items)
+  }
+
+  remove(startIndex: number, removeCount?: number) {
+    return this.splice(startIndex, removeCount || 1)
+  }
 }

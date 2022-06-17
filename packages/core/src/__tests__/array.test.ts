@@ -71,3 +71,23 @@ test('support splice', async() => {
   form.splice(0, 9999, ...['aa', 'bb', 'cc'])
   expect(form.node(0).state.value).toEqual('aa')
 })
+
+test('should work push & insert & remove', async() => {
+  const form = createForm<Array<string>>({ initialValue: ['a', 'b'] })
+  form.push('c')
+  expect(form.node(2).state.value).toEqual('c')
+
+  // default move count is 1
+  form.remove(1)
+  expect(form.state.value).toEqual(['a', 'c'])
+
+  form.insert(1, 'd')
+  expect(form.state.value).toEqual(['a', 'd', 'c'])
+
+  form.insert(2, 'e', 'f')
+  expect(form.state.value).toEqual(['a', 'd', 'e', 'f', 'c'])
+
+  // move count is 4
+  form.remove(1, 4)
+  expect(form.state.value).toEqual(['a'])
+})
