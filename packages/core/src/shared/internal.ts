@@ -36,7 +36,7 @@ export const spliceArrayChildren = (
 
   insertItem.forEach((state) => {
     if (isArr(state.value))
-      list.push(form.node(form.children.length))
+      list.push(form.nodeArray(form.children.length))
     else
       list.push(form.node(form.children.length))
   })

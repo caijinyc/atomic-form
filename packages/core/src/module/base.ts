@@ -47,11 +47,10 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
         pathString: generatePathString(pathArray),
       }
 
-      const removeRootAddress = this.address.pathArray.slice(1)
       this.value = computed({
-        get: () => getIn(removeRootAddress, this.root.value.value),
+        get: () => getIn(this.address.pathArray.slice(1), this.root.value.value),
         set: (val) => {
-          setIn(removeRootAddress, this.root.value.value, val)
+          setIn(this.address.pathArray.slice(1), this.root.value.value, val)
         },
       })
     }

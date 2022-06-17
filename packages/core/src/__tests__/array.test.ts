@@ -62,3 +62,12 @@ test('create form use nodeArray', async() => {
   arrForm.node(0).setState({ value: 'c' })
   expect(arrForm.node(0).state.value).toEqual('c')
 })
+
+test('support splice', async() => {
+  const form = createForm<Array<string>>({ initialValue: ['a', 'b'] })
+  form.splice(0, 1, 'c')
+  expect(form.node(0).state.value).toEqual('c')
+
+  form.splice(0, 9999, ...['aa', 'bb', 'cc'])
+  expect(form.node(0).state.value).toEqual('aa')
+})

@@ -1,5 +1,5 @@
 import { shallowReactive } from '@vue/reactivity'
-import { isArr } from '@atomic-form/shared'
+import { clone, isArr } from '@atomic-form/shared'
 import type { ElemOf, ExcludeVoidType } from '../type/util'
 import type { WatchOptions } from '../watch'
 import { watch } from '../watch'
@@ -63,5 +63,18 @@ export class FormAtomArray<
 
   get allChildren(): IForm[] {
     return buildGetAllChildren(this)
+  }
+
+  splice(startIndex: number, deleteCount: number, ...items: ProcessedListItem[]) {
+    const clonedItems: ProcessedListItem[] = clone(items) || []
+    spliceArrayChildren(this, startIndex, deleteCount, ...clonedItems.map(v => ({ value: v })))
+    const value = clone(this.value.value) || []
+    value.splice(startIndex, deleteCount, ...items)
+    this.setState(
+      {
+        value,
+      },
+    )
+    return this
   }
 }
