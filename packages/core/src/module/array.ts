@@ -3,8 +3,13 @@ import { clone, isArr } from '@atomic-form/shared'
 import type { ElemOf, ExcludeVoidType } from '../type/util'
 import type { WatchOptions } from '../watch'
 import { watch } from '../watch'
-import { buildGetAllChildren, buildNode, spliceArrayChildren } from '../shared/internal'
+import {
+  buildGetAllChildren,
+  buildNode,
+
+} from '../shared/internal'
 import type { AtomType, IForm } from '../type/form-type'
+import { processFromAndToIndex, resetFormArrayChildrenAddress, spliceArrayChildren } from '../shared/array-util'
 import type { FormAtom, FormProps } from './atom'
 import { FormAtomBase } from './base'
 
@@ -88,5 +93,23 @@ export class FormAtomArray<
 
   remove(startIndex: number, removeCount?: number) {
     return this.splice(startIndex, removeCount || 1)
+  }
+
+  move(fromIndex: number, toIndex: number) {
+    const value = clone(this.value.value) || []
+    const { from, to } = processFromAndToIndex(value, fromIndex, toIndex)
+
+    const formNode = this.children[fromIndex]
+    this.children[fromIndex] = this.children[toIndex]
+    this.children[toIndex] = formNode
+    resetFormArrayChildrenAddress(this)
+    const [v] = value.splice(from, 1)
+    value.splice(to, 0, v)
+    this.setState(
+      {
+        value,
+      },
+    )
+    return this
   }
 }

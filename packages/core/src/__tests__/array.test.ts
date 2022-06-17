@@ -91,3 +91,9 @@ test('should work push & insert & remove', async() => {
   form.remove(1, 4)
   expect(form.state.value).toEqual(['a'])
 })
+
+test('API: move', async() => {
+  const form = createForm<Array<string>>({ initialValue: ['a', 'b'] })
+  form.move(0, 1)
+  expect(form.state.value).toEqual(['b', 'a'])
+})
