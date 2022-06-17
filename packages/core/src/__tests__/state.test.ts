@@ -35,3 +35,19 @@ test('should work setState', () => {
 
   expect(form.state.value).toEqual({ name: 'jerry', age: 18 })
 })
+
+test('should work setValue', () => {
+  const form = new FormAtom<{
+    name: string
+    age: number
+  }>({
+    initialValue: { name: 'tom', age: 0 },
+  })
+
+  form.setValue({
+    name: 'jerry',
+    age: 18,
+  })
+
+  expect(form.state.value).toEqual({ name: 'jerry', age: 18 })
+})

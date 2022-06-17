@@ -84,8 +84,22 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
     )
   }
 
-  get state(): IFormState<Value> {
+  get state(): IFormState<ProcessedValue> {
     return getState(this)
+  }
+
+  setState(
+    payload: IPartialFormState<ProcessedValue> | ((oldState: IFormState<ProcessedValue>) => IPartialFormState<ProcessedValue>),
+  ): this {
+    return buildSetState(this, payload)
+  }
+
+  setValue(
+    payload: ProcessedValue | ((oldValue: ProcessedValue) => ProcessedValue),
+  ): this {
+    return buildSetState(this, {
+      value: payload,
+    })
   }
 
   watch<WithAllChildren extends boolean = false,
@@ -129,12 +143,6 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
     this._watchStopFunList.forEach(stop => stop())
     if (option?.withAllChildren)
       this.allChildren.forEach(child => child.stopWatch({ withAllChildren: true }))
-  }
-
-  setState(
-    payload: IPartialFormState<Value> | ((oldState: IFormState<Value>) => IPartialFormState<Value>),
-  ): this {
-    return buildSetState(this, payload)
   }
 }
 
