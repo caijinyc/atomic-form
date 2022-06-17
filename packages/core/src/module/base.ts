@@ -26,6 +26,7 @@ let rootFormCount = 0
 
 export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Value>> extends FormState<Value> {
   private _watchStopFunList: Array<() => void> = []
+  children: Record<string, any> | Array<any> = {}
 
   isRoot = false
   root: FormAtomBase
@@ -118,11 +119,16 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
     return stop
   }
 
+  get allChildren(): IForm[] {
+    return buildGetAllChildren(this)
+  }
+
   stopWatch(option?: {
-    // TODO
     withAllChildren?: boolean
   }) {
     this._watchStopFunList.forEach(stop => stop())
+    if (option?.withAllChildren)
+      this.allChildren.forEach(child => child.stopWatch({ withAllChildren: true }))
   }
 
   setState(

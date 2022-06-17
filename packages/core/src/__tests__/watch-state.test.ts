@@ -1,3 +1,4 @@
+import { nextTick } from '@atomic-form/shared'
 import { describe, expect, test, vitest } from 'vitest'
 import { FormAtom } from '../module'
 
@@ -86,4 +87,38 @@ test('should works stop watch', () => {
   form.stopWatch()
   name.setState({ value: 'jerry' })
   expect(fn).toHaveBeenCalledTimes(0)
+})
+
+test('should works stop watch withAllChildren', () => {
+  const form = new FormAtom<{
+    foo: {
+      name: string
+      age: number
+    }
+  }>({
+    initialValue: { foo: { name: 'tom', age: 0 } },
+  })
+  const name = form.node('foo').node('name')
+
+  let triggered1 = 0
+  let triggered2 = 0
+  form.node('foo').watch('value', (v) => {
+    triggered1++
+  }, { sync: true })
+
+  form.node('foo').node('name').watch('value', (v) => {
+    triggered2++
+  }, { sync: true })
+
+  form.stopWatch()
+  name.setState({ value: 'jerry2' })
+
+  expect(triggered1).toBe(1)
+  expect(triggered2).toBe(1)
+
+  form.stopWatch({ withAllChildren: true })
+  name.setState({ value: 'jerry3' })
+
+  expect(triggered1).toBe(1)
+  expect(triggered2).toBe(1)
 })

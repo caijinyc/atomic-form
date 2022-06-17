@@ -2,6 +2,7 @@ import type { RuleItem } from 'async-validator/dist-types/interface'
 import type { IStateType } from '../shared/get-state'
 import type { FormAtom } from '../module'
 import type { FormAtomArray } from '../module/array'
+import type { FormAtomBase } from '../module/base'
 
 export interface IFormState<ValueType = any> {
   value: ValueType
@@ -94,4 +95,4 @@ export type IWatchStateChangeOptions<W extends boolean = false, State = any> = {
 } & ICallbackBaseOptions
 
 export type AtomType = 'normal' | 'list'
-export type IForm = FormAtom | FormAtomArray<any, any, any>
+export type IForm = FormAtomBase | FormAtom | FormAtomArray<any, any, any>
