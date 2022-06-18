@@ -1,7 +1,7 @@
 import { expect, test, vitest } from 'vitest'
 import { nextTick } from '@atomic-form/shared'
-import { FormAtom, createForm } from '../module'
-import { FormAtomArray } from '../module/array'
+import { FormAtom, createForm } from '../src/module'
+import { FormAtomArray } from '../src/module/array'
 
 test('node list should work', () => {
   const form = new FormAtom<{

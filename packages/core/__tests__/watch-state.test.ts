@@ -1,6 +1,6 @@
 import { nextTick } from '@atomic-form/shared'
 import { describe, expect, test, vitest } from 'vitest'
-import { FormAtom } from '../module'
+import { FormAtom } from '../src/module'
 
 describe('should work watch state', () => {
   const form = new FormAtom<{

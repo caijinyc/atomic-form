@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { FormAtom } from '../module'
+import { FormAtom } from '../src/module'
 
 test('should works basic use', () => {
   const form = new FormAtom<{

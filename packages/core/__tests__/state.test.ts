@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { FormAtom } from '../module'
-import { FORM_DEFAULT_VALUE } from '../shared/constants'
+import { FormAtom } from '../src/module'
+import { FORM_DEFAULT_VALUE } from '../src/shared/constants'
 
 test('should works get state', () => {
   const form = new FormAtom<{
