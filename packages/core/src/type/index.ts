@@ -1,4 +1,1 @@
-export interface IFormAddress {
-  pathArray: (string | number)[]
-  pathString: string
-}
+export { FormEntity } from './form-type'

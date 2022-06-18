@@ -1,16 +1,15 @@
 import { computed, ref } from '@vue/reactivity'
 import { clone, isValid } from '@atomic-form/shared'
-import type { IFormAddress } from '../type'
 import { getIn, setIn } from '../shared/path'
 import { FORM_DEFAULT_VALUE } from '../shared/constants'
 import type {
-  IForm,
-  IFormState,
-  IPartialFormState,
-  IResponseFormState,
-  IStop,
-  IWatchStateChangeCallback,
-  IWatchStateChangeOptions,
+  Address, FormEntity,
+  PartialState,
+  ResponseState,
+  State,
+  StopFun,
+  WatchStateCallback,
+  WatchStateOptions,
 } from '../type/form-type'
 import type { IStateType } from '../shared/get-state'
 import { getState } from '../shared/get-state'
@@ -31,7 +30,7 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
   isRoot = false
   root: FormAtomBase
   parent: FormAtomBase
-  address: IFormAddress
+  address: Address
   uuid: string
 
   constructor(props: FormProps<Value>) {
@@ -78,18 +77,18 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
           && isValid(this.state.initialValue)
           && !isValid(this.state.value)
         )
-          this.value.value = clone(this.initialValue.value)
+          this.value.value = clone(value)
       },
       { immediate: true, flush: 'sync' },
     )
   }
 
-  get state(): IFormState<ProcessedValue> {
+  get state(): State<ProcessedValue> {
     return getState(this)
   }
 
   setState(
-    payload: IPartialFormState<ProcessedValue> | ((oldState: IFormState<ProcessedValue>) => IPartialFormState<ProcessedValue>),
+    payload: PartialState<ProcessedValue> | ((oldState: State<ProcessedValue>) => PartialState<ProcessedValue>),
   ): this {
     return buildSetState(this, payload)
   }
@@ -103,29 +102,29 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
   }
 
   watch<WithAllChildren extends boolean = false,
-    State = IResponseFormState<ProcessedValue, void, WithAllChildren>,
+    State = ResponseState<ProcessedValue, void, WithAllChildren>,
   >(
-    callback: IWatchStateChangeCallback<ProcessedValue, void, WithAllChildren>,
-    options?: IWatchStateChangeOptions<WithAllChildren, State>,
-  ): IStop
+    callback: WatchStateCallback<ProcessedValue, void, WithAllChildren>,
+    options?: WatchStateOptions<WithAllChildren, State>,
+  ): StopFun
 
   watch<StateType extends IStateType,
     WithAllChildren extends boolean = false,
-    State = IResponseFormState<ProcessedValue, StateType, WithAllChildren>,
+    State = ResponseState<ProcessedValue, StateType, WithAllChildren>,
   >(
     stateType: StateType,
-    callback: IWatchStateChangeCallback<ProcessedValue, StateType, WithAllChildren>,
-    options?: IWatchStateChangeOptions<WithAllChildren, State>,
-  ): IStop
+    callback: WatchStateCallback<ProcessedValue, StateType, WithAllChildren>,
+    options?: WatchStateOptions<WithAllChildren, State>,
+  ): StopFun
 
   watch<StateType extends IStateType[],
     WithAllChildren extends boolean = false,
-    State = IResponseFormState<ProcessedValue, StateType, WithAllChildren>,
+    State = ResponseState<ProcessedValue, StateType, WithAllChildren>,
   >(
     stateType: StateType,
-    callback: IWatchStateChangeCallback<ProcessedValue, StateType, WithAllChildren>,
-    options?: IWatchStateChangeOptions<WithAllChildren, State>,
-  ): IStop
+    callback: WatchStateCallback<ProcessedValue, StateType, WithAllChildren>,
+    options?: WatchStateOptions<WithAllChildren, State>,
+  ): StopFun
 
   watch(...params: any): any {
     const stop = buildWatchStateChange(this, ...params)
@@ -133,7 +132,7 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
     return stop
   }
 
-  get allChildren(): IForm[] {
+  get allChildren(): FormEntity[] {
     return buildGetAllChildren(this)
   }
 

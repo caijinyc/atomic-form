@@ -1,6 +1,6 @@
 import { isArr } from '@atomic-form/shared'
 import type { FormAtomArray } from '../module/array'
-import type { IPartialFormState } from '../type/form-type'
+import type { PartialState } from '../type/form-type'
 import type { FormAtom } from '../module'
 import { generatePathString } from './internal'
 
@@ -28,7 +28,7 @@ export const spliceArrayChildren = (
   // form: any,
   startIndex: number,
   deleteCount: number,
-  ...insertItem: IPartialFormState<any>[]
+  ...insertItem: PartialState<any>[]
 ) => {
   const list: Array<FormAtom | FormAtomArray> = []
 

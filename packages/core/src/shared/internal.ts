@@ -1,10 +1,10 @@
 import { flatArray, isArr } from '@atomic-form/shared'
-import type { AtomType, IForm } from '../type/form-type'
+import type { Address, AtomType, FormEntity } from '../type/form-type'
 import { FormAtom } from '../module'
 import { FormAtomArray } from '../module/array'
-import type { IFormAddress } from '../type'
+import type { FormAtomBase } from '../module/base'
 
-export const generatePathString = (addressArr: IFormAddress['pathArray']) => addressArr.join('/')
+export const generatePathString = (addressArr: Address['pathArray']) => addressArr.join('/')
 
 export const buildNode = (form: any, path: any, type?: AtomType): any => {
   if (!form.children[path]) {
@@ -21,7 +21,7 @@ export const buildNode = (form: any, path: any, type?: AtomType): any => {
   return form.children[path] as any
 }
 
-export const buildGetAllChildren = (form: IForm): Array<IForm> => {
+export const buildGetAllChildren = (form: FormEntity | FormAtomBase): Array<FormEntity> => {
   let children
   if (isArr(form.children))
     children = form.children.filter(f => f)

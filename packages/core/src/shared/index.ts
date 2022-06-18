@@ -1,6 +1,6 @@
 import { Keys, clone, isFn, nextTick } from '@atomic-form/shared'
 import type { FormAtomBase } from '../module'
-import type { IFormState, IPartialFormState } from '../type/form-type'
+import type { PartialState, State } from '../type/form-type'
 
 export const buildLazyCallback = (originCb: (...args: any) => any) => {
   let count = 0
@@ -16,10 +16,10 @@ export const buildLazyCallback = (originCb: (...args: any) => any) => {
 
 export function buildSetState<V, F extends FormAtomBase>(
   form: F,
-  payload: IPartialFormState<V> | ((oldState: IFormState<V>) => IPartialFormState<V>),
+  payload: PartialState<V> | ((oldState: State<V>) => PartialState<V>),
 ): F {
   // const newState: IPartialFormState<V> = clone(isFn(payload) ? payload(form.state) : payload)
-  const newState: IPartialFormState<V> = isFn(payload) ? payload(form.state) : payload
+  const newState: PartialState<V> = isFn(payload) ? payload(form.state) : payload
   Keys(newState).forEach((stateType) => {
     form[stateType].value = newState[stateType]
   })

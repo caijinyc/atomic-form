@@ -1,16 +1,16 @@
-import type { IFormState } from '../type/form-type'
+import type { State } from '../type/form-type'
 import type { FormAtomBase } from '../module/base'
 
-export type IStateType = keyof IFormState
+export type IStateType = keyof State
 
 export const getState = <StateType extends IStateType | IStateType[]>(
   formAtom: FormAtomBase,
   stateType?: StateType,
 ): StateType extends IStateType
-  ? IFormState<any>[StateType]
+  ? State<any>[StateType]
   : StateType extends IStateType[]
-    ? Pick<IFormState<any>, StateType[number]>
-    : IFormState<any> => {
+    ? Pick<State<any>, StateType[number]>
+    : State<any> => {
   if (stateType) {
     if (Array.isArray(stateType)) {
       const res: any = {}

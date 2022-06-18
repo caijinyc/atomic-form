@@ -4,7 +4,7 @@ import type { FormAtom } from '../module'
 import type { FormAtomArray } from '../module/array'
 import type { FormAtomBase } from '../module/base'
 
-export interface IFormState<ValueType = any> {
+export interface State<ValueType = any> {
   value: ValueType
   initialValue?: ValueType
   label: any
@@ -24,7 +24,7 @@ export interface IFormState<ValueType = any> {
   validating: boolean
 }
 
-export type IPartialFormState<V> = Partial<IFormState<V>>
+export type PartialState<V> = Partial<State<V>>
 
 export interface ErrorType<V = any> {
   status: 'success' | 'error' | 'warning'
@@ -46,25 +46,25 @@ export interface ErrorType<V = any> {
   value?: V
 }
 
-export type IStop = () => void
+export type StopFun = () => void
 
-export type IResponseFormState<V, StateType extends any, W> = StateType extends IStateType
+export type ResponseState<V, StateType extends any, W> = StateType extends IStateType
   ? W extends false
-    ? IFormState<V>[StateType]
-    : Record<string, IFormState<any>[StateType] | undefined>
+    ? State<V>[StateType]
+    : Record<string, State<any>[StateType] | undefined>
   : StateType extends IStateType[]
     ? W extends false
-      ? Pick<IFormState<V>, StateType[number]>
-      : Record<string, Pick<IFormState<V>, StateType[number]> | undefined>
+      ? Pick<State<V>, StateType[number]>
+      : Record<string, Pick<State<V>, StateType[number]> | undefined>
     : W extends false
-      ? IFormState<V>
-      : Record<string, IFormState<any> | undefined>
+      ? State<V>
+      : Record<string, State<any> | undefined>
 
-export type IWatchStateChangeCallback<V, StateType extends any, W> = (
-  state: IResponseFormState<V, StateType, W>,
+export type WatchStateCallback<V, StateType extends any, W> = (
+  state: ResponseState<V, StateType, W>,
 ) => void
 
-export interface ICallbackBaseOptions {
+export interface CallbackBaseOptions {
   /**
    * @default false
    * 回调函数是否需要立即执行
@@ -78,7 +78,7 @@ export interface ICallbackBaseOptions {
   sync?: boolean
 }
 
-export type IWatchStateChangeOptions<W extends boolean = false, State = any> = {
+export type WatchStateOptions<W extends boolean = false, State = any> = {
   /**
    * TODO WIP
    * @default false
@@ -92,7 +92,13 @@ export type IWatchStateChangeOptions<W extends boolean = false, State = any> = {
    * 当 compare 为 Function 时，返回值为 true 时才会触发更新 / callback 执行
    */
   compare?: boolean | ((preState: State, curState: State) => boolean)
-} & ICallbackBaseOptions
+} & CallbackBaseOptions
 
 export type AtomType = 'normal' | 'list'
-export type IForm = FormAtomBase | FormAtom | FormAtomArray<any, any, any>
+
+export type FormEntity = FormAtom | FormAtomArray<any, any, any>
+
+export interface Address {
+  pathArray: (string | number)[]
+  pathString: string
+}
