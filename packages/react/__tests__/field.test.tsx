@@ -106,3 +106,42 @@ test('getValueFromEvent', async() => {
   fireEvent.change(ele, { target: { value: '111' } })
   expect(form.state.value).toEqual('111zzz')
 })
+
+test('old onChange should work', async() => {
+  const form = createForm<string>({
+    initialValue: 'tom',
+  })
+  const fn = vitest.fn()
+  const { container } = render(
+    <Field form={form}>
+      <input data-testid={'input'} onChange={(v) => {
+        fn(v.target.value)
+      }}/>
+    </Field>,
+  )
+  const ele = getByTestId(container, 'input') as HTMLInputElement
+  fireEvent.change(ele, { target: { value: '111' } })
+  expect(fn).toHaveBeenCalledWith('111')
+  expect(fn).toHaveBeenCalledTimes(1)
+})
+
+test('children is function should work well', async() => {
+  const form = createForm<string>({
+    initialValue: 'tom',
+  })
+  const fn = vitest.fn()
+  const { container } = render(
+    <Field form={form}>
+      {
+        (state) => {
+          fn(state.value)
+          return <input data-testid={'input'} />
+        }
+      }
+    </Field>,
+  )
+  const ele = getByTestId(container, 'input') as HTMLInputElement
+  fireEvent.change(ele, { target: { value: '111' } })
+  expect(fn).toHaveBeenCalledWith('tom')
+  expect(fn).toHaveBeenCalledWith('111')
+})

@@ -100,6 +100,7 @@ function FieldCore<ValueType = any>(props: FieldProps<ValueType>) {
       [props.valuePropName || 'value']: oldVal || '',
       onChange: (...args: any[]) => {
         const [e] = args
+
         const newVal = props.getValueFromEvent
           ? props.getValueFromEvent(...args)
           : typeof e === 'object' && e != null && 'preventDefault' in e
@@ -128,7 +129,7 @@ function FieldCore<ValueType = any>(props: FieldProps<ValueType>) {
         const oldOnChange = node.props.onChange
 
         if (oldOnChange)
-          oldOnChange(newVal)
+          oldOnChange(...args)
       },
     })
 
