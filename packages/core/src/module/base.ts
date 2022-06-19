@@ -1,5 +1,5 @@
 import { computed, ref } from '@vue/reactivity'
-import { clone, isValid } from '@atomic-form/shared'
+import { Keys, clone, isValid } from '@atomic-form/shared'
 import { getIn, setIn } from '../shared/path'
 import { FORM_DEFAULT_VALUE } from '../shared/constants'
 import type {
@@ -89,13 +89,13 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
   }
 
   setState(
-    payload: PartialState<ProcessedValue> | ((oldState: State<ProcessedValue>) => PartialState<ProcessedValue>),
+    payload: PartialState<Value> | ((oldState: State<Value>) => PartialState<Value>),
   ): this {
     return buildSetState(this, payload)
   }
 
   setValue(
-    payload: ProcessedValue | ((oldValue: ProcessedValue) => ProcessedValue),
+    payload: Value | ((oldValue: Value) => Value),
   ): this {
     return buildSetState(this, {
       value: payload,
@@ -143,6 +143,23 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
     this._watchStopFunList.forEach(stop => stop())
     if (option?.withAllChildren)
       this.allChildren.forEach(child => child.stopWatch({ withAllChildren: true }))
+  }
+
+  initialize(originProps: PartialState<Value>) {
+    const props = { ...originProps }
+    if (
+      isValid(props.initialValue)
+      && !Keys(props).includes('value')
+      && !isValid(this.state.value)
+    )
+      props.value = props.initialValue
+
+    this.setState(
+      {
+        ...props,
+        initialized: true,
+      },
+    )
   }
 }
 

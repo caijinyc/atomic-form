@@ -4,14 +4,38 @@ import { FORM_DEFAULT_VALUE } from '../shared/constants'
 import type { State } from '../type/form-type'
 
 export class FormState<ValueType> {
+  /**
+   * when you set initialValue and value is invalid, it will be set to value
+   */
   initialValue: Ref<ValueType> = ref(FORM_DEFAULT_VALUE.initialValue)
+  /**
+   * just form value
+   * Tip:
+   *   Parent Atom value includes all children's value
+   *   so, if you set parent atom value, it will also set children's value
+   *   if you set children's value, it will also set parent atom value
+   */
   value: Ref<ValueType> = ref(FORM_DEFAULT_VALUE.initialValue)
-
   label: Ref<State['label']> = ref(FORM_DEFAULT_VALUE.label)
+  /**
+   * @default undefined
+   * if visible is undefined, it means it's always visible
+   * if visible is false, it means it's always invisible, Field will not render wrapped component
+   */
   visible: Ref<State['visible']> = ref(FORM_DEFAULT_VALUE.visible)
+  /**
+   * Field will
+   */
   disabled: Ref<State['disabled']> = ref(FORM_DEFAULT_VALUE.disabled)
-
+  /**
+   * @default false
+   * when React Field Component mounted, set to true
+   */
   initialized: Ref<State['initialized']> = ref(FORM_DEFAULT_VALUE.initialized)
+  /**
+   * @default false
+   * When Field Wrapped Component triggered value change, set to true
+   */
   modified: Ref<State['modified']> = ref(FORM_DEFAULT_VALUE.modified)
   required: Ref<State['required']> = ref(FORM_DEFAULT_VALUE.required)
   rules: Ref<State['rules']> = ref(FORM_DEFAULT_VALUE.rules)
