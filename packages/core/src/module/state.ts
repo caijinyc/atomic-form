@@ -34,7 +34,8 @@ export class FormState<ValueType> {
   initialized: Ref<State['initialized']> = ref(FORM_DEFAULT_VALUE.initialized)
   /**
    * @default false
-   * When Field Wrapped Component triggered value change, set to true
+   * when user edit the form what is wrapped by Field, state `modified` will be set to true
+   * TIP: all parent form will also be modified
    */
   modified: Ref<State['modified']> = ref(FORM_DEFAULT_VALUE.modified)
   required: Ref<State['required']> = ref(FORM_DEFAULT_VALUE.required)

@@ -1,5 +1,5 @@
-import { flatArray, isArr } from '@atomic-form/shared'
-import type { Address, AtomType, FormInstance } from '../type/form-type'
+import { Keys, flatArray, isArr, isFn } from '@atomic-form/shared'
+import type { Address, AtomType, FormInstance, PartialState, State } from '../type/form-type'
 import { FormAtom } from '../module'
 import { FormAtomArray } from '../module/array'
 import type { FormAtomBase } from '../module/base'
@@ -29,4 +29,26 @@ export const buildGetAllChildren = (form: FormInstance | FormAtomBase): Array<Fo
     children = Object.values(form.children).filter(f => f)
 
   return [...children, ...flatArray(children.map(f => f.allChildren))]
+}
+
+export const triggerModified = (form: FormInstance) => {
+  [form, ...form.allParent].forEach(f =>
+    f.setState(
+      {
+        modified: true,
+      },
+    ),
+  )
+}
+
+export function buildSetState<V, F extends FormAtomBase>(
+  form: F,
+  payload: PartialState<V> | ((oldState: State<V>) => PartialState<V>),
+): F {
+  // const newState: IPartialFormState<V> = clone(isFn(payload) ? payload(form.state) : payload)
+  const newState: PartialState<V> = isFn(payload) ? payload(form.state) : payload
+  Keys(newState).forEach((stateType) => {
+    form[stateType].value = newState[stateType]
+  })
+  return form
 }

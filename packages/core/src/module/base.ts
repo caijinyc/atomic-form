@@ -15,11 +15,10 @@ import type {
 import type { IStateType } from '../shared/get-state'
 import { getState } from '../shared/get-state'
 import { buildWatchStateChange } from '../shared/watch-state'
-import { buildSetState } from '../shared'
 import { watch } from '../watch'
-import { buildGetAllChildren, generatePathString } from '../shared/internal'
+import { buildGetAllChildren, buildSetState, generatePathString } from '../shared/internal'
 import { FormState } from './state'
-import type { FormProps, ProcessChildValueType } from './atom'
+import type { FormAtom, FormProps, ProcessChildValueType } from './atom'
 
 const countMap: Record<string, number> = {}
 let rootFormCount = 0
@@ -135,6 +134,12 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
 
   get allChildren(): FormInstance[] {
     return buildGetAllChildren(this)
+  }
+
+  get allParent(): FormInstance[] {
+    if (this.isRoot) return [] as any
+    const parent = this.parent as FormAtom
+    return [parent, ...parent.allParent]
   }
 
   stopWatch(option?: {

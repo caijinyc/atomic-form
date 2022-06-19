@@ -6,6 +6,7 @@ import type { FormAtomArray } from '../module/array'
 export interface State<ValueType = any> {
   value: ValueType
   initialValue?: ValueType
+  initialized: boolean
 
   // WIP
   validating: boolean
@@ -14,7 +15,6 @@ export interface State<ValueType = any> {
   disabled: boolean
   required?: boolean
   disableValidate: boolean
-  initialized: boolean
   modified: boolean
   rules?: RuleItem[]
   error?: ErrorType
