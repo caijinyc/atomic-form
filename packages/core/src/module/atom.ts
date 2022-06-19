@@ -1,5 +1,5 @@
 import { buildGetAllChildren, buildNode } from '../shared/internal'
-import type { AtomType, FormEntity } from '../type/form-type'
+import type { AtomType, FormInstance } from '../type/form-type'
 import { FormAtomBase } from './base'
 import type { FormAtomArray } from './array'
 
@@ -28,7 +28,7 @@ export class FormAtom<Value = any, ProcessedValue = ProcessChildValueType<Value>
     return buildNode(this, path, 'list') as any
   }
 
-  get allChildren(): FormEntity[] {
+  get allChildren(): FormInstance[] {
     return buildGetAllChildren(this)
   }
 }

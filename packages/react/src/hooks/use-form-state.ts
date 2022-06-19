@@ -1,5 +1,4 @@
-// export function useFormState
-import type { FormEntity, IStateType, ResponseState, WatchStateOptions } from '@atomic-form/core'
+import type { FormInstance, IStateType, ResponseState, WatchStateOptions } from '@atomic-form/core'
 import { isArr, isPlainObj, pick } from '@atomic-form/shared'
 import { useEffect, useRef } from 'react'
 import { useForceRender } from '../shared/use-force-render'
@@ -13,7 +12,7 @@ export function useFormState<
   V,
   WithAllChildren extends boolean = false,
   S = ResponseState<V, void, WithAllChildren>,
->(form: FormEntity<V>, options?: WatchStateOptions<WithAllChildren>): S
+>(form: FormInstance<V>, options?: WatchStateOptions<WithAllChildren>): S
 
 /**
  * return state of the form by type
@@ -28,12 +27,12 @@ export function useFormState<
   WithAllChildren extends boolean = false,
   S = ResponseState<V, T, WithAllChildren>,
 >(
-  form: FormEntity<V>,
+  form: FormInstance<V>,
   type: T,
   options?: WatchStateOptions<WithAllChildren, S>,
 ): S
 
-export function useFormState(form: FormEntity, ...params: any[]): any {
+export function useFormState(form: FormInstance, ...params: any[]): any {
   const type: IStateType | IStateType[] | undefined = isPlainObj(params[0])
     ? undefined
     : (params[0] as IStateType | IStateType[])

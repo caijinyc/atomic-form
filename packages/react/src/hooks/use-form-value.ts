@@ -1,4 +1,4 @@
-import type { FormEntity, ResponseState, WatchStateOptions } from '@atomic-form/core'
+import type { FormInstance, WatchStateOptions } from '@atomic-form/core'
 import { useFormState } from './use-form-state'
 
 /**
@@ -8,6 +8,6 @@ import { useFormState } from './use-form-state'
  */
 export function useFormValue<
   V,
->(form: FormEntity<V>, options?: WatchStateOptions): V {
+>(form: FormInstance<V>, options?: WatchStateOptions): V {
   return useFormState(form, 'value', options)
 }

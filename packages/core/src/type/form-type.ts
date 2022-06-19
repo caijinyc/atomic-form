@@ -2,26 +2,22 @@ import type { RuleItem } from 'async-validator/dist-types/interface'
 import type { IStateType } from '../shared/get-state'
 import type { FormAtom } from '../module'
 import type { FormAtomArray } from '../module/array'
-import type { FormAtomBase } from '../module/base'
 
 export interface State<ValueType = any> {
   value: ValueType
   initialValue?: ValueType
+
+  // WIP
+  validating: boolean
   label: any
   visible: boolean
   disabled: boolean
   required?: boolean
-
   disableValidate: boolean
   initialized: boolean
-
   modified: boolean
-
   rules?: RuleItem[]
   error?: ErrorType
-
-  // WIP
-  validating: boolean
 }
 
 export type PartialState<V> = Partial<State<V>>
@@ -96,7 +92,7 @@ export type WatchStateOptions<W extends boolean = false, State = any> = {
 
 export type AtomType = 'normal' | 'list'
 
-export type FormEntity<Value = any> = FormAtom<Value> | FormAtomArray<Value>
+export type FormInstance<Value = any> = FormAtom<Value> | FormAtomArray<Value>
 
 export interface Address {
   pathArray: (string | number)[]

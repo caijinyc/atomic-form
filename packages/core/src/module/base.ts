@@ -3,7 +3,8 @@ import { clone, isValid } from '@atomic-form/shared'
 import { getIn, setIn } from '../shared/path'
 import { FORM_DEFAULT_VALUE } from '../shared/constants'
 import type {
-  Address, FormEntity,
+  Address,
+  FormInstance,
   PartialState,
   ResponseState,
   State,
@@ -132,7 +133,7 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
     return stop
   }
 
-  get allChildren(): FormEntity[] {
+  get allChildren(): FormInstance[] {
     return buildGetAllChildren(this)
   }
 

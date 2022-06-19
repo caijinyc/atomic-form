@@ -8,7 +8,7 @@ import {
   buildNode,
 
 } from '../shared/internal'
-import type { AtomType, FormEntity } from '../type/form-type'
+import type { AtomType, FormInstance } from '../type/form-type'
 import { processFromAndToIndex, resetFormArrayChildrenAddress, spliceArrayChildren } from '../shared/array-util'
 import type { FormAtom, FormProps } from './atom'
 import { FormAtomBase } from './base'
@@ -48,7 +48,7 @@ export class FormAtomArray<
     }, { immediate: true })
   }
 
-  watchChildren(cb: (val: Array<FormEntity>) => void, options?: WatchOptions) {
+  watchChildren(cb: (val: Array<FormInstance>) => void, options?: WatchOptions) {
     return watch(
       () => this.children.map(fc => fc.uuid),
       () => {
@@ -66,7 +66,7 @@ export class FormAtomArray<
     return buildNode(this, path, 'list')
   }
 
-  get allChildren(): FormEntity[] {
+  get allChildren(): FormInstance[] {
     return buildGetAllChildren(this)
   }
 

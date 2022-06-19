@@ -1,5 +1,5 @@
 import { flatArray, isArr } from '@atomic-form/shared'
-import type { Address, AtomType, FormEntity } from '../type/form-type'
+import type { Address, AtomType, FormInstance } from '../type/form-type'
 import { FormAtom } from '../module'
 import { FormAtomArray } from '../module/array'
 import type { FormAtomBase } from '../module/base'
@@ -21,7 +21,7 @@ export const buildNode = (form: any, path: any, type?: AtomType): any => {
   return form.children[path] as any
 }
 
-export const buildGetAllChildren = (form: FormEntity | FormAtomBase): Array<FormEntity> => {
+export const buildGetAllChildren = (form: FormInstance | FormAtomBase): Array<FormInstance> => {
   let children
   if (isArr(form.children))
     children = form.children.filter(f => f)
