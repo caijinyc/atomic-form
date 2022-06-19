@@ -1,1 +1,2 @@
-export { FormEntity } from './form-type'
+export * from './form-type'
+export type { IStateType } from '../shared/get-state'

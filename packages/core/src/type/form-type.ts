@@ -96,7 +96,7 @@ export type WatchStateOptions<W extends boolean = false, State = any> = {
 
 export type AtomType = 'normal' | 'list'
 
-export type FormEntity = FormAtom | FormAtomArray<any, any, any>
+export type FormEntity<Value = any> = FormAtom<Value> | FormAtomArray<Value>
 
 export interface Address {
   pathArray: (string | number)[]
