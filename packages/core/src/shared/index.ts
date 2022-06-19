@@ -1,5 +1,5 @@
 import { Keys, clone, isFn, nextTick } from '@atomic-form/shared'
-import type { FormAtomBase } from '../module'
+import type { FormAtomBase } from '../module/base'
 import type { PartialState, State } from '../type/form-type'
 
 export const buildLazyCallback = (originCb: (...args: any) => any) => {

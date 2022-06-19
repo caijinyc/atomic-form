@@ -48,7 +48,7 @@ export interface ErrorType<V = any> {
 
 export type StopFun = () => void
 
-export type ResponseState<V, StateType extends any, W> = StateType extends IStateType
+export type ResponseState<V, StateType extends (IStateType | IStateType[] | void), W> = StateType extends IStateType
   ? W extends false
     ? State<V>[StateType]
     : Record<string, State<any>[StateType] | undefined>
@@ -60,7 +60,7 @@ export type ResponseState<V, StateType extends any, W> = StateType extends IStat
       ? State<V>
       : Record<string, State<any> | undefined>
 
-export type WatchStateCallback<V, StateType extends any, W> = (
+export type WatchStateCallback<V, StateType extends (IStateType | IStateType[] | void), W> = (
   state: ResponseState<V, StateType, W>,
 ) => void
 
