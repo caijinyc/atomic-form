@@ -1,7 +1,7 @@
 import { describe, expect, test, vitest } from 'vitest'
 import { act, renderHook } from '@testing-library/react-hooks'
 import { nextTick } from '@atomic-form/shared'
-import { FORM_DEFAULT_VALUE } from '@atomic-form/core/src/shared/constants'
+import { FORM_DEFAULT_STATE } from '@atomic-form/core/src/shared/constants'
 import { createForm } from '@atomic-form/core'
 import { useForm, useFormState, useFormValue, useWatchForm } from '../src/hooks'
 
@@ -17,14 +17,14 @@ describe('useFormState', () => {
     const form = createForm({ initialValue: { foo: 'ff' } })
     const { result: stateRef } = renderHook(() => useFormState(form, { sync: true }))
     expect(stateRef.current).toEqual({
-      ...FORM_DEFAULT_VALUE,
+      ...FORM_DEFAULT_STATE,
       initialValue: { foo: 'ff' },
       value: { foo: 'ff' },
     })
 
     form.setValue({ foo: 'xx' })
     expect(stateRef.current).toEqual({
-      ...FORM_DEFAULT_VALUE,
+      ...FORM_DEFAULT_STATE,
       initialValue: { foo: 'ff' },
       value: { foo: 'xx' },
     })
@@ -64,7 +64,7 @@ test('useWatchForm should work', () => {
   form.setValue({ foo: 'joo' })
   expect(fn).toHaveBeenCalledTimes(1)
   expect(fn).toBeCalledWith({
-    ...FORM_DEFAULT_VALUE,
+    ...FORM_DEFAULT_STATE,
     initialValue: { foo: 'ff' },
     value: { foo: 'joo' },
   })

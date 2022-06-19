@@ -1,20 +1,20 @@
 import type { FormInstance, PartialState, State } from '@atomic-form/core'
-import type React from 'react'
+import { triggerModified } from '@atomic-form/core'
+import React, { useEffect } from 'react'
+import { isEqual, isFn } from '@atomic-form/shared'
+import { useFormState } from '../hooks'
 
 export type JSXComponent = any
 export type ValidateTriggerType = string[] | string
 export interface FieldProps<ValueType = any> {
-  form?: FormInstance<ValueType>
-  /**
-   * WI
-   */
-  rules?: any[]
+  form: FormInstance<ValueType>
   /**
    * defaultState only works when Field Component first mounted
    * @defaultState undefined
    */
   defaultState?: PartialState<ValueType>
   /**
+   * WIP
    * form decorator, used to wrap FieldWrapper to implement different UI components
    * @default React.Fragment
    */
@@ -50,23 +50,115 @@ export interface FieldProps<ValueType = any> {
    */
   getValueFromEvent?: (...args: any[]) => any
   /**
+   * WIP
+   */
+  rules?: any[]
+  /**
+   * WIP
    * set validate trigger condition
    * default trigger is `onChange`, you can set it to `onBlur` or `onSubmit`
    * @default ['onChange']
    */
   validateTrigger?: ValidateTriggerType
   /**
+   * WIP
    * @default false
    * when form unmount, field value and error will be set to undefined
    */
   autoDelete?: boolean
   /**
+   * WIP
    * @default true
    * form will not validate field when component unmount
    */
   autoDisableValidate?: false
 }
 
-export function Field() {
+const DEFAULT_PROPS: Partial<FieldProps> = {
+  validateTrigger: ['onChange'],
+}
 
+function FieldCore<ValueType = any>(props: FieldProps<ValueType>) {
+  const form = props.form
+  const state = useFormState(props.form, { sync: true })
+  const value = state.value
+
+  const node = (isFn(props.children) ? props.children(state) : props.children) as React.ReactElement
+  const oldVal = props.mapValue ? props.mapValue(value) : value
+
+  if (!state.visible) return null
+
+  const renderComponent = () =>
+    React.cloneElement(node, {
+      ...node.props,
+      // ...validateTriggerEvents, TODO
+      /**
+       * oldValue || '', the empty string is used to decide component is controlled component.
+       * https://reactjs.org/docs/forms.html#controlled-components
+       * https://bobbyhadz.com/blog/react-component-changing-uncontrolled-input
+       */
+      [props.valuePropName || 'value']: oldVal || '',
+      onChange: (...args: any[]) => {
+        const [e] = args
+        const newVal = props.getValueFromEvent
+          ? props.getValueFromEvent(...args)
+          : typeof e === 'object' && e != null && 'preventDefault' in e
+            ? e.target.value
+            : e
+        const newV = props.onUpdateValue ? props.onUpdateValue(newVal, oldVal as any) : newVal
+
+        form.setState(
+          {
+            value: newV,
+          },
+        )
+        /**
+         * when user edit the form what is wrapped by Field, state `modified` will be set to true
+         * TIP: all parent form will also be modified
+         */
+        if (!form.state.modified)
+          triggerModified(form)
+
+        // TODO
+        // if (validateTrigger.includes('onChange')) {
+        //   // 表单值发生变更时触发校验
+        //   form.validateWithAllParent('onChange')
+        // }
+
+        const oldOnChange = node.props.onChange
+
+        if (oldOnChange)
+          oldOnChange(newVal)
+      },
+    })
+
+  return renderComponent()
+}
+
+export function Field<Value = any>(originProps: FieldProps<Value>) {
+  const props = {
+    ...DEFAULT_PROPS,
+    ...originProps,
+  }
+  const form = props.form
+  const initialized = useFormState(form, 'initialized')
+  useEffect(() => {
+    if (!initialized) {
+      form.initialize({
+        ...props.defaultState,
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (props.rules && !isEqual(form.state.rules, props.rules)) {
+      form.setState(
+        {
+          rules: props.rules,
+        },
+      )
+    }
+  }, [props.rules])
+
+  return <FieldCore {...props} >{props.children}</FieldCore>
 }
