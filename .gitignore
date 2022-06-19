@@ -7,3 +7,6 @@ explorations
 TODOs.md
 *.log
 .idea
+
+packages/**/es/**
+packages/**/lib/**
