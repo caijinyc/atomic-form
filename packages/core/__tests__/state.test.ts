@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { FormAtom } from '../src/module'
-import { FORM_DEFAULT_VALUE } from '../src/shared/constants'
+import { FORM_DEFAULT_STATE } from '../src/shared/constants'
 
 test('should works get state', () => {
   const form = new FormAtom<{
@@ -12,7 +12,7 @@ test('should works get state', () => {
 
   expect(form.state.value).toEqual({ name: 'tom', age: 0 })
   expect(form.state).toEqual({
-    ...FORM_DEFAULT_VALUE,
+    ...FORM_DEFAULT_STATE,
     initialValue: { name: 'tom', age: 0 },
     value: { name: 'tom', age: 0 },
   })

@@ -1,5 +1,5 @@
-import { buildGetAllChildren, buildNode } from '../shared/internal'
-import type { AtomType, FormInstance } from '../type/form-type'
+import { buildGetAllChildren, buildNode } from '../shared'
+import type { FormInstance } from '../type'
 import { FormAtomBase } from './base'
 import type { FormAtomArray } from './array'
 

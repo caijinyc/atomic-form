@@ -1,7 +1,7 @@
 import { computed, ref } from '@vue/reactivity'
 import { Keys, clone, isValid } from '@atomic-form/shared'
 import { getIn, setIn } from '../shared/path'
-import { FORM_DEFAULT_VALUE } from '../shared/constants'
+import { FORM_DEFAULT_STATE } from '../shared/constants'
 import type {
   Address,
   FormInstance,
@@ -11,12 +11,12 @@ import type {
   StopFun,
   WatchStateCallback,
   WatchStateOptions,
-} from '../type/form-type'
+} from '../type'
 import type { IStateType } from '../shared/get-state'
 import { getState } from '../shared/get-state'
 import { buildWatchStateChange } from '../shared/watch-state'
 import { watch } from '../watch'
-import { buildGetAllChildren, buildSetState, generatePathString } from '../shared/internal'
+import { buildGetAllChildren, buildSetState, generatePathString } from '../shared'
 import { FormState } from './state'
 import type { FormAtom, FormProps, ProcessChildValueType } from './atom'
 
@@ -60,7 +60,7 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
       this.uuid = `ROOT-${rootFormCount++}`
       this.root = this
       this.parent = this
-      this.initialValue = ref(isValid(props.initialValue) ? props.initialValue : FORM_DEFAULT_VALUE.initialValue)
+      this.initialValue = ref(isValid(props.initialValue) ? props.initialValue : FORM_DEFAULT_STATE.initialValue)
       this.value = ref(isValid(props.value) ? props.value : clone(this.initialValue.value))
 
       this.address = {

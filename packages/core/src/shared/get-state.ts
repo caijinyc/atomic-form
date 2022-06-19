@@ -1,4 +1,4 @@
-import type { State } from '../type/form-type'
+import type { State } from '../type'
 import type { FormAtomBase } from '../module/base'
 
 export type IStateType = keyof State

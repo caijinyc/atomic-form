@@ -1,10 +1,9 @@
 import { isFn, isPlainObj } from '@atomic-form/shared'
-import type { StopFun, WatchStateOptions } from '../type/form-type'
+import type { StopFun, WatchStateOptions } from '../type'
 import { watch } from '../watch'
 import type { FormAtomBase } from '../module/base'
 import type { IStateType } from './get-state'
 import { getState } from './get-state'
-import { buildLazyCallback } from './index'
 
 const DEFAULT_OPTIONS: WatchStateOptions = {
   compare: true,

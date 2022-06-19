@@ -1,7 +1,6 @@
 import { Keys, flatArray, isArr, isFn } from '@atomic-form/shared'
-import type { Address, AtomType, FormInstance, PartialState, State } from '../type/form-type'
-import { FormAtom } from '../module'
-import { FormAtomArray } from '../module/array'
+import type { Address, AtomType, FormInstance, PartialState, State } from '../type'
+import { FormAtom, FormAtomArray } from '../module'
 import type { FormAtomBase } from '../module/base'
 
 export const generatePathString = (addressArr: Address['pathArray']) => addressArr.join('/')
