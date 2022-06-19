@@ -34,6 +34,17 @@ test('should work setState', () => {
   })
 
   expect(form.state.value).toEqual({ name: 'jerry', age: 18 })
+
+  form.setState((old) => {
+    return {
+      value: {
+        name: `tom&${old.value.name}`,
+        age: 18,
+      },
+    }
+  })
+
+  expect(form.state.value).toEqual({ name: 'tom&jerry', age: 18 })
 })
 
 test('should work setValue', () => {
