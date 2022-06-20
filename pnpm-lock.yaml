@@ -68,7 +68,7 @@ importers:
 
   packages/core:
     specifiers:
-      '@atomic-form/shared': 0.0.1
+      '@atomic-form/shared': 0.0.2
       '@vue/reactivity': 3.2.12
       '@vue/shared': 3.2.12
       async-validator: 4.0.3
@@ -80,8 +80,8 @@ importers:
 
   packages/react:
     specifiers:
-      '@atomic-form/core': 0.0.1
-      '@atomic-form/shared': 0.0.1
+      '@atomic-form/core': 0.0.2
+      '@atomic-form/shared': 0.0.2
     dependencies:
       '@atomic-form/core': link:../core
       '@atomic-form/shared': link:../shared

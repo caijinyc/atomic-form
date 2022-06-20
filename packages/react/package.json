@@ -1,6 +1,6 @@
 {
   "name": "@atomic-form/react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "react module",
   "keywords": [
     "atomic-form"
@@ -22,7 +22,7 @@
     "react-dom": "^17.0.1"
   },
   "dependencies": {
-    "@atomic-form/shared": "0.0.1",
-    "@atomic-form/core": "0.0.1"
+    "@atomic-form/shared": "0.0.2",
+    "@atomic-form/core": "0.0.2"
   }
 }
