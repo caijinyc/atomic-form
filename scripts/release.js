@@ -1,3 +1,6 @@
+/**
+ * learned from: https://github.com/vuejs/core/blob/25f7a16a6eccbfa8d857977dcf1f23fb36b830b5/scripts/release.js
+ */
 const path = require('path')
 const fs = require('fs')
 const execa = require('execa')
