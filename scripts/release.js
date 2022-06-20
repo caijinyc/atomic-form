@@ -192,7 +192,7 @@ async function restorePKG() {
 
   step('\nRunning tests...')
   if (!skipTests && !isDryRun)
-    await run('yarn', ['test'])
+    await run('pnpm', ['test'])
 
   // await run(bin('jest'), ['--clearCache']);
   // await run('yarn', ['test', '--bail']);
