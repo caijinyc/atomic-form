@@ -118,7 +118,7 @@ function FieldCore<ValueType = any>(props: FieldProps<ValueType>) {
          * TIP: all parent form will also be modified
          */
         if (!form.state.modified)
-          triggerModified(form)
+          triggerModified(form as any)
 
         // TODO
         // if (validateTrigger.includes('onChange')) {
