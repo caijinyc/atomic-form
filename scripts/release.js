@@ -239,8 +239,8 @@ async function restorePKG() {
 
   await restorePKG()
 
-  // push to GitLab
-  step('\nPushing to GitLab...')
+  // push to Git
+  step('\nPushing to Git...')
   await runIfNotDry('git', ['tag', `v${targetVersion}`])
   await runIfNotDry('git', ['push', 'origin', `refs/tags/v${targetVersion}`])
   await runIfNotDry('git', ['push'])
