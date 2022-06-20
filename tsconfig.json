@@ -6,6 +6,9 @@
     "jsx": "react",
     "module": "esnext",
     "target": "es2016",
+    "lib": [
+      "esnext"
+    ],
     "allowJs": false,
     "noUnusedLocals": false,
     "removeComments": false,
