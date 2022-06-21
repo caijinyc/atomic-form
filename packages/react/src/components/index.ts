@@ -1,1 +1,2 @@
-export { FieldProps, Field, ValidateTriggerType, JSXComponent } from './field'
+export type { FieldProps, ValidateTriggerType, JSXComponent } from './field'
+export { Field } from './field'
