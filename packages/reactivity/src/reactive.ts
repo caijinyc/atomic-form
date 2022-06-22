@@ -68,7 +68,6 @@ function trigger(target: any, key: string | symbol, value: any) {
           effectsToTrigger.add(effectFn)
       })
 
-      console.log('effectsToTrigger', key, effectsToTrigger)
       effectsToTrigger.forEach(fn => fn())
     }
   }
