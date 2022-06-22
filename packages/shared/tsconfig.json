@@ -1,13 +1,5 @@
 {
   "extends": "../../tsconfig.json",
   "include": ["./src/*"],
-  "exclude": ["./__tests__/*"],
-  "compilerOptions": {
-    "lib": [
-      "dom",
-      "es5",
-      "scripthost",
-      "es2015.promise"
-    ]
-  }
+  "exclude": ["./__tests__/*"]
 }
