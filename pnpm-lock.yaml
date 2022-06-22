@@ -91,7 +91,7 @@ importers:
 
   packages/core:
     specifiers:
-      '@atomic-form/shared': 0.0.4
+      '@atomic-form/shared': 0.0.5
       '@vue/reactivity': 3.2.12
       '@vue/shared': 3.2.12
       async-validator: 4.0.3
@@ -103,17 +103,26 @@ importers:
 
   packages/react:
     specifiers:
-      '@atomic-form/core': 0.0.4
-      '@atomic-form/shared': 0.0.4
+      '@atomic-form/core': 0.0.5
+      '@atomic-form/shared': 0.0.5
     dependencies:
       '@atomic-form/core': link:../core
       '@atomic-form/shared': link:../shared
+
+  packages/reactivity:
+    specifiers:
+      '@vue/reactivity': 3.2.12
+    dependencies:
+      '@vue/reactivity': 3.2.12
 
   packages/shared:
     specifiers:
       dequal: 2.0.2
     dependencies:
       dequal: 2.0.2
+
+  packages/validator:
+    specifiers: {}
 
 packages:
 

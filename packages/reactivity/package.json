@@ -16,5 +16,8 @@
     "build": "rimraf -rf lib es && npm run build:cjs && npm run build:esm",
     "build:esm": "tsc  --outDir es -m es2015 --skipLibCheck true",
     "build:cjs": "tsc  --outDir lib -m commonjs --skipLibCheck true"
+  },
+  "dependencies": {
+    "@vue/reactivity": "3.2.12"
   }
 }

@@ -1,1 +1,1 @@
-const bucket = new WeakMap()
+export * from './reactive'
