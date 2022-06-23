@@ -1,4 +1,5 @@
 import { expect, test, vitest } from 'vitest'
+import { timeout } from '@atomic-form/shared'
 import { effect, reactive } from '../src'
 
 test('should work', () => {
@@ -94,4 +95,42 @@ test('change value in effect without trigger infinite loop', () => {
 
   expect(triggered).toBe(1)
   expect(obj.tom).toBe(2)
+})
+
+test('scheduler should work', async() => {
+  const obj = reactive({
+    tom: 1,
+    jerry: 1,
+  })
+
+  const fn = vitest.fn()
+
+  effect(() => {
+    obj.tom++
+    fn(obj.tom)
+  }, {
+    scheduler(effectFn) {
+      setTimeout(() => { effectFn() })
+    },
+  })
+
+  obj.tom++
+  fn(obj.tom)
+  expect(fn).toHaveBeenCalledTimes(2)
+  await timeout(10)
+  expect(fn).toHaveBeenCalledTimes(3)
+  expect(fn).toHaveBeenNthCalledWith(1, 2)
+  expect(fn).toHaveBeenNthCalledWith(2, 3)
+  expect(fn).toHaveBeenNthCalledWith(3, 4)
+
+  effect(() => {
+    obj.jerry++
+    fn(obj.jerry)
+  })
+  obj.jerry++
+  fn(obj.jerry)
+  expect(fn).toHaveBeenCalledTimes(6)
+  expect(fn).toHaveBeenNthCalledWith(4, 2)
+  expect(fn).toHaveBeenNthCalledWith(5, 4)
+  expect(fn).toHaveBeenNthCalledWith(6, 4)
 })

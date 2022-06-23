@@ -1,12 +1,17 @@
 interface ReactiveEffect extends Function{
   deps: Set<Function>[]
+  options: ReactiveEffectOptions
+}
+
+interface ReactiveEffectOptions {
+  scheduler?: (effect: ReactiveEffect) => void
 }
 
 const bucket = new WeakMap<object, Map<any, Set<ReactiveEffect>>>()
 let activeEffect: ReactiveEffect | undefined
 const effectStack: ReactiveEffect[] = []
 
-export function effect(fn: Function) {
+export function effect(fn: Function, options: ReactiveEffectOptions = {}) {
   const effectFn: ReactiveEffect = () => {
     /**
      * p.54
@@ -20,6 +25,7 @@ export function effect(fn: Function) {
     activeEffect = effectStack[effectStack.length - 1]
   }
   effectFn.deps = []
+  effectFn.options = options
   effectFn()
 }
 
@@ -68,7 +74,12 @@ function trigger(target: any, key: string | symbol, value: any) {
           effectsToTrigger.add(effectFn)
       })
 
-      effectsToTrigger.forEach(fn => fn())
+      effectsToTrigger.forEach((effectFn) => {
+        if (effectFn.options.scheduler)
+          effectFn.options.scheduler(effectFn)
+        else
+          effectFn()
+      })
     }
   }
 }

@@ -111,8 +111,10 @@ importers:
 
   packages/reactivity:
     specifiers:
+      '@atomic-form/shared': 0.0.5
       '@vue/reactivity': 3.2.12
     dependencies:
+      '@atomic-form/shared': link:../shared
       '@vue/reactivity': 3.2.12
 
   packages/shared:
