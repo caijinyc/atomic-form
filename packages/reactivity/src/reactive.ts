@@ -3,8 +3,26 @@ interface ReactiveEffect extends Function{
   options: ReactiveEffectOptions
 }
 
+export type EffectScheduler = (...args: any[]) => any
+
 interface ReactiveEffectOptions {
-  scheduler?: (effect: ReactiveEffect) => void
+  scheduler?: EffectScheduler
+  lazy?: boolean
+}
+
+const jobQueue = new Set<ReactiveEffect>()
+const p = Promise.resolve()
+let isFlushing = false
+function flushJob() {
+  if (isFlushing)
+    return
+
+  isFlushing = true
+  p.then(() => {
+    jobQueue.forEach(job => job())
+  }).finally(() => {
+    isFlushing = false
+  })
 }
 
 const bucket = new WeakMap<object, Map<any, Set<ReactiveEffect>>>()
