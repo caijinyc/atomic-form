@@ -1,6 +1,6 @@
 import { expect, test, vitest } from 'vitest'
-import { timeout } from '@atomic-form/shared'
-import { effect, reactive } from '../src'
+import { nextTick, timeout } from '@atomic-form/shared'
+import { effect, flushJob, jobQueue, reactive } from '../src'
 
 test('should work', () => {
   const obj = reactive({
@@ -133,4 +133,29 @@ test('scheduler should work', async() => {
   expect(fn).toHaveBeenNthCalledWith(4, 2)
   expect(fn).toHaveBeenNthCalledWith(5, 4)
   expect(fn).toHaveBeenNthCalledWith(6, 4)
+})
+
+test('job queue', async() => {
+  const obj = reactive({
+    tom: 1,
+    jerry: 1,
+  })
+
+  const fn = vitest.fn()
+
+  effect(() => {
+    fn(obj.tom)
+  }, {
+    scheduler(effectFn) {
+      jobQueue.add(effectFn)
+      flushJob()
+    },
+  })
+
+  obj.tom++
+  obj.tom++
+  obj.tom++
+
+  await nextTick()
+  expect(fn).toHaveBeenCalledTimes(2)
 })

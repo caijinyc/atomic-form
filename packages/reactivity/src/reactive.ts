@@ -10,10 +10,10 @@ interface ReactiveEffectOptions {
   lazy?: boolean
 }
 
-const jobQueue = new Set<ReactiveEffect>()
+export const jobQueue = new Set<ReactiveEffect>()
 const p = Promise.resolve()
 let isFlushing = false
-function flushJob() {
+export function flushJob() {
   if (isFlushing)
     return
 
