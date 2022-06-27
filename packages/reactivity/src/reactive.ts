@@ -38,13 +38,15 @@ export function effect(fn: Function, options: ReactiveEffectOptions = {}) {
     cleanup(effectFn)
     activeEffect = effectFn
     effectStack.push(effectFn)
-    fn()
+    const res = fn()
     effectStack.pop()
     activeEffect = effectStack[effectStack.length - 1]
+    return res
   }
   effectFn.deps = []
   effectFn.options = options
-  effectFn()
+  if (!options.lazy) effectFn()
+  return effectFn
 }
 
 function cleanup(effectFn: ReactiveEffect) {
@@ -56,7 +58,7 @@ function cleanup(effectFn: ReactiveEffect) {
   }
 }
 
-function track(target: any, key: string | symbol) {
+export function track(target: any, key: string | symbol) {
   if (!activeEffect) return
 
   let depsMap = bucket.get(target)
@@ -73,7 +75,7 @@ function track(target: any, key: string | symbol) {
   activeEffect.deps.push(deps)
 }
 
-function trigger(target: any, key: string | symbol, value: any) {
+export function trigger(target: any, key: string | symbol, value: any) {
   target[key] = value
   const depsMap = bucket.get(target)
   if (depsMap) {

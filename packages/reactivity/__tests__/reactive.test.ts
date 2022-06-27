@@ -159,3 +159,21 @@ test('job queue', async() => {
   await nextTick()
   expect(fn).toHaveBeenCalledTimes(2)
 })
+
+test('option lazy', async() => {
+  const obj = reactive({
+    a: 1,
+    b: 2,
+  })
+  const fn = vitest.fn()
+  const effectFn = effect(() => {
+    fn(obj.tom)
+    return obj.a + obj.b
+  }, {
+    lazy: true,
+  })
+  expect(fn).toHaveBeenCalledTimes(0)
+  const value = effectFn()
+  expect(fn).toHaveBeenCalledTimes(1)
+  expect(value).toBe(3)
+})
