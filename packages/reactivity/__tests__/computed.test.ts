@@ -22,16 +22,20 @@ test('computed cache should work', () => {
   expect(fn).toHaveBeenCalledTimes(1)
 })
 
-// test('computed work in effect', () => {
-//   const obj = reactive({ a: 1, b: 2 })
-//   const fn = vitest.fn()
-//   const sumRef = computed(() => {
-//     return obj.a + obj.b
-//   })
-//   effect(() => {
-//     fn(sumRef.value)
-//   })
-//   expect(fn).toHaveBeenCalledTimes(1)
-//   obj.a++
-//   expect(fn).toHaveBeenCalledTimes(2)
-// })
+test('computed work in effect', () => {
+  const obj = reactive({ a: 1, b: 2 })
+  const fn = vitest.fn()
+  const sumRef = computed(() => {
+    return obj.a + obj.b
+  })
+
+  effect(() => {
+    fn(sumRef.value)
+  })
+
+  expect(fn).toHaveBeenCalledTimes(1)
+  obj.a++
+  expect(fn).toHaveBeenCalledTimes(2)
+  obj.a++
+  expect(fn).toHaveBeenCalledTimes(3)
+})

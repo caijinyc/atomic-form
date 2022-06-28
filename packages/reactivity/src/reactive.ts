@@ -1,3 +1,5 @@
+import { isValid } from '@atomic-form/shared'
+
 interface ReactiveEffect extends Function{
   deps: Set<Function>[]
   options: ReactiveEffectOptions
@@ -75,8 +77,7 @@ export function track(target: any, key: string | symbol) {
   activeEffect.deps.push(deps)
 }
 
-export function trigger(target: any, key: string | symbol, value: any) {
-  target[key] = value
+export function trigger(target: any, key: string | symbol) {
   const depsMap = bucket.get(target)
   if (depsMap) {
     const effects = depsMap.get(key)
@@ -111,7 +112,8 @@ export function reactive(target: any) {
       return target[key]
     },
     set(target, key, value) {
-      trigger(target, key, value)
+      target[key] = value
+      trigger(target, key)
       return true
     },
   })
