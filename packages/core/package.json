@@ -17,11 +17,8 @@
     "build:esm": "tsc  --outDir es -m es2015 --skipLibCheck true",
     "build:cjs": "tsc  --outDir lib -m commonjs --skipLibCheck true"
   },
-  "devDependencies": {
-    "@vue/reactivity": "^3.2.27"
-  },
   "dependencies": {
     "@atomic-form/shared": "0.0.6",
-    "async-validator": "4.0.3"
+    "@vue/reactivity": "^3.2.27"
   }
 }
