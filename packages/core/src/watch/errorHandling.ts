@@ -1,4 +1,4 @@
-import { isFunction, isPromise } from '@vue/shared'
+import { isFunction, isPromise } from '@atomic-form/shared'
 
 export function callWithErrorHandling(fn: Function, type: string, args?: unknown[]) {
   let res

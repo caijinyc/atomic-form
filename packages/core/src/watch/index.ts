@@ -12,16 +12,7 @@ import {
   isReactive,
   isRef,
 } from '@vue/reactivity'
-import {
-  NOOP,
-  hasChanged,
-  isArray,
-  isFunction,
-  isMap,
-  isObject,
-  isPlainObject,
-  isSet,
-} from '@vue/shared'
+import { NOOP, hasChanged, isArray, isFunction, isMap, isObject, isPlainObject, isSet } from '@atomic-form/shared'
 import { callWithAsyncErrorHandling, callWithErrorHandling, warn } from './errorHandling'
 
 export type WatchEffect = (onInvalidate: InvalidateCbRegistrator) => void
