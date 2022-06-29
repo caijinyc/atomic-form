@@ -18,7 +18,7 @@
     "build:cjs": "tsc  --outDir lib -m commonjs --skipLibCheck true"
   },
   "dependencies": {
-    "@vue/reactivity": "3.2.12",
+    "@vue/reactivity": "^3.2.37",
     "@atomic-form/shared": "0.0.5"
   }
 }
