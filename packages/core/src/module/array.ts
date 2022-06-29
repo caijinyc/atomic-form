@@ -1,5 +1,5 @@
 import { shallowReactive } from '@vue/reactivity'
-import { clone, isArr } from '@atomic-form/shared'
+import { clone, isArray } from '@atomic-form/shared'
 import type { ElemOf, ExcludeVoidType } from '../type/util'
 import type { WatchOptions } from '../watch'
 import { watch } from '../watch'
@@ -26,7 +26,7 @@ export class FormAtomArray<
     this.children = shallowReactive([])
 
     watch(() => this.value.value, (newValue) => {
-      if (isArr(newValue)) {
+      if (isArray(newValue)) {
         const valueLen = newValue.length
         const childrenLen = this.children.length
         if (this.children.length !== valueLen) {

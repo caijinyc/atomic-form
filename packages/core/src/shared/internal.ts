@@ -1,4 +1,4 @@
-import { Keys, flatArray, isArr, isFn } from '@atomic-form/shared'
+import { Keys, flatArray, isArray, isFunction } from '@atomic-form/shared'
 import type { Address, AtomType, FormInstance, PartialState, State } from '../type'
 import { FormAtom, FormAtomArray } from '../module'
 import type { FormAtomBase } from '../module/base'
@@ -22,7 +22,7 @@ export const buildNode = (form: any, path: any, type?: AtomType): any => {
 
 export const buildGetAllChildren = (form: FormInstance | FormAtomBase): Array<FormInstance> => {
   let children
-  if (isArr(form.children))
+  if (isArray(form.children))
     children = form.children.filter(f => f)
   else
     children = Object.values(form.children).filter(f => f)
@@ -45,7 +45,7 @@ export function buildSetState<V, F extends FormAtomBase>(
   payload: PartialState<V> | ((oldState: State<V>) => PartialState<V>),
 ): F {
   // const newState: IPartialFormState<V> = clone(isFn(payload) ? payload(form.state) : payload)
-  const newState: PartialState<V> = isFn(payload) ? payload(form.state) : payload
+  const newState: PartialState<V> = isFunction(payload) ? payload(form.state) : payload
   Keys(newState).forEach((stateType) => {
     form[stateType].value = newState[stateType]
   })

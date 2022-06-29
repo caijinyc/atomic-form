@@ -1,4 +1,4 @@
-import { isArr } from '@atomic-form/shared'
+import { isArray } from '@atomic-form/shared'
 import type { FormAtomArray } from '../module/array'
 import type { PartialState } from '../type/form-type'
 import type { FormAtom } from '../module'
@@ -33,7 +33,7 @@ export const spliceArrayChildren = (
   const list: Array<FormAtom | FormAtomArray> = []
 
   insertItem.forEach((state) => {
-    if (isArr(state.value))
+    if (isArray(state.value))
       list.push(form.nodeArray(form.children.length))
     else
       list.push(form.node(form.children.length))

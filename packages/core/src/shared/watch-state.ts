@@ -1,4 +1,4 @@
-import { isFn, isPlainObj } from '@atomic-form/shared'
+import { isFunction, isPlainObject } from '@atomic-form/shared'
 import type { StopFun, WatchStateOptions } from '../type'
 import { watch } from '../watch'
 import type { FormAtomBase } from '../module/base'
@@ -10,14 +10,14 @@ const DEFAULT_OPTIONS: WatchStateOptions = {
 }
 
 export const buildWatchStateChange = (form: FormAtomBase, ...params: any): StopFun => {
-  const stateType: IStateType | IStateType[] = isFn(params[0]) ? undefined : params[0]
+  const stateType: IStateType | IStateType[] = isFunction(params[0]) ? undefined : params[0]
   const options: WatchStateOptions = {
     ...DEFAULT_OPTIONS,
-    ...(isPlainObj(params[1]) ? params[1] : isPlainObj(params[2]) ? params[2] : {}),
+    ...(isPlainObject(params[1]) ? params[1] : isPlainObject(params[2]) ? params[2] : {}),
   }
 
   // batch update at the same time will emit callback function only once
-  const originCb = isFn(params[0]) ? params[0] : params[1]
+  const originCb = isFunction(params[0]) ? params[0] : params[1]
   const cb = originCb
 
   let source: () => any

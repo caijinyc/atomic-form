@@ -1,7 +1,7 @@
 import type { FormInstance, PartialState, State } from '@atomic-form/core'
 import { triggerModified } from '@atomic-form/core'
 import React, { useEffect } from 'react'
-import { isEqual, isFn } from '@atomic-form/shared'
+import { isEqual, isFunction } from '@atomic-form/shared'
 import { useFormState } from '../hooks'
 
 export type JSXComponent = any
@@ -83,7 +83,7 @@ function FieldCore<ValueType = any>(props: FieldProps<ValueType>) {
   const state = useFormState(props.form, { sync: true })
   const value = state.value
 
-  const node = (isFn(props.children) ? props.children(state) : props.children) as React.ReactElement
+  const node = (isFunction(props.children) ? props.children(state) : props.children) as React.ReactElement
   const oldVal = props.mapValue ? props.mapValue(value) : value
 
   if (!state.visible) return null

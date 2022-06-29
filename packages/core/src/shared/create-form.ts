@@ -1,4 +1,4 @@
-import { isArr } from '@atomic-form/shared'
+import { isArray } from '@atomic-form/shared'
 import type { FormProps } from '../module/atom'
 import { FormAtom, FormAtomArray } from '../module'
 
@@ -21,5 +21,5 @@ export const createForm: <Value,
   props: Omit<FormProps<Value>, 'initialValue'> & { initialValue: Value }
 ) => Value extends Array<any> ? FormAtomArray<SavedValue> : FormAtom<SavedValue>
   = (props) => {
-    return isArr(props.initialValue) ? new FormAtomArray(props) : new FormAtom(props) as any
+    return isArray(props.initialValue) ? new FormAtomArray(props) : new FormAtom(props) as any
   }

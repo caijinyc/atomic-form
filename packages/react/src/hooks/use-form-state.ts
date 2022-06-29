@@ -1,5 +1,5 @@
 import type { FormInstance, IStateType, ResponseState, WatchStateOptions } from '@atomic-form/core'
-import { isArr, isPlainObj, pick } from '@atomic-form/shared'
+import { isArray, isPlainObject, pick } from '@atomic-form/shared'
 import { useEffect, useRef } from 'react'
 import { useForceRender } from '../shared/use-force-render'
 
@@ -33,12 +33,12 @@ export function useFormState<
 ): S
 
 export function useFormState(form: FormInstance, ...params: any[]): any {
-  const type: IStateType | IStateType[] | undefined = isPlainObj(params[0])
+  const type: IStateType | IStateType[] | undefined = isPlainObject(params[0])
     ? undefined
     : (params[0] as IStateType | IStateType[])
-  const options: WatchStateOptions = isPlainObj(params[0])
+  const options: WatchStateOptions = isPlainObject(params[0])
     ? params[0]
-    : isPlainObj(params[1])
+    : isPlainObject(params[1])
       ? params[1]
       : {}
 
@@ -57,7 +57,7 @@ export function useFormState(form: FormInstance, ...params: any[]): any {
    * TODO withAllChildren is not working
    */
   const getState = () => type
-    ? isArr(type)
+    ? isArray(type)
       ? pick(form.state as any, type)
       : form.state[type]
     : form.state
@@ -83,7 +83,7 @@ export function useFormState(form: FormInstance, ...params: any[]): any {
     return () => {
       stop()
     }
-  }, [form.uuid, options.sync, options.withAllChildren, ...[isArr(type) ? undefined : type]])
+  }, [form.uuid, options.sync, options.withAllChildren, ...[isArray(type) ? undefined : type]])
 
   return state.current
 }

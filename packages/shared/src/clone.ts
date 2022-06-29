@@ -1,4 +1,4 @@
-import { isPlainObj } from './check'
+import { isPlainObject } from './check'
 
 export const clone = (values: any) => {
   if (Array.isArray(values)) {
@@ -8,7 +8,7 @@ export const clone = (values: any) => {
     })
     return res
   }
-  else if (isPlainObj(values)) {
+  else if (isPlainObject(values)) {
     // React Node
     if ('$$typeof' in values && '_owner' in values)
       return values
