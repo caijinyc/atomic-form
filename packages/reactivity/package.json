@@ -1,6 +1,6 @@
 {
   "name": "@atomic-form/reactivity",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "reactivity module",
   "keywords": [
     "atomic-form"
@@ -19,6 +19,6 @@
   },
   "dependencies": {
     "@vue/reactivity": "^3.2.37",
-    "@atomic-form/shared": "0.0.6"
+    "@atomic-form/shared": "0.0.7"
   }
 }

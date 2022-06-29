@@ -1,6 +1,6 @@
 {
   "name": "@atomic-form/validator",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "validator module",
   "keywords": [
     "atomic-form"
