@@ -34,3 +34,5 @@ function AtomicFormDemo() {
   )
 }
 ```
+
+[//]: # (Atomic-form is powered by Proxy API, if you want to use immutable state, you must use @atomic-form/immutable plugin, it's dependent on Immer)
