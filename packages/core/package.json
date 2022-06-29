@@ -1,6 +1,6 @@
 {
   "name": "@atomic-form/core",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "core module",
   "keywords": [
     "atomic-form"
@@ -21,7 +21,7 @@
     "@vue/reactivity": "^3.2.27"
   },
   "dependencies": {
-    "@atomic-form/shared": "0.0.5",
+    "@atomic-form/shared": "0.0.6",
     "async-validator": "4.0.3"
   }
 }

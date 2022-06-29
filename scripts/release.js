@@ -35,7 +35,7 @@ const getPkgRoot = pkg => path.resolve(__dirname, `../packages/${pkg}`)
 const inc = i => semver.inc(currentVersion, i, preId)
 const bin = name => path.resolve(__dirname, `../node_modules/.bin/${name}`)
 
-const skippedPackages = []
+const skippedPackages = ['reactivity', 'validator']
 const packages = fs
   .readdirSync(path.resolve(__dirname, '../packages'))
   .filter(p => !p.endsWith('.ts') && !p.startsWith('.'))
@@ -195,7 +195,7 @@ async function restorePKG() {
 
   step('\nRunning tests...')
   if (!skipTests && !isDryRun)
-    await run('pnpm', ['test'])
+    await run('vitest', ['test'])
 
   // await run(bin('jest'), ['--clearCache']);
   // await run('yarn', ['test', '--bail']);
@@ -208,6 +208,10 @@ async function restorePKG() {
     for (const pkg of packages) {
       const pkgJsonPath = path.resolve(getPkgRoot(pkg), 'package.json')
       const pkgJson = await fse.readJson(pkgJsonPath)
+
+      if (skippedPackages.find(name => pkgJson.name.includes(name)))
+        continue
+
       await run('pnpm', ['--filter', pkgJson.name, 'build'])
     }
     // await run('yarn', ['build', '--release']);
