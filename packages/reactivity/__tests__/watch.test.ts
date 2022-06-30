@@ -1,4 +1,4 @@
-import { expect, test, vitest } from 'vitest'
+import { describe, expect, test, vitest } from 'vitest'
 import { clone, nextTick } from '@atomic-form/shared'
 import { reactive, watch } from '../src'
 
@@ -43,24 +43,46 @@ test('options immediate', async() => {
   expect(fn).toHaveBeenCalledTimes(5)
 })
 
-test('options flush', async() => {
-  const obj = reactive({
-    foo: 1,
+describe('options flush', () => {
+  test('post', async() => {
+    const obj = reactive({
+      foo: 1,
+    })
+    const fn = vitest.fn()
+    watch(() => obj.foo, (value, oldValue, onCleanup) => {
+      fn(value, oldValue)
+    }, {
+      flush: 'post',
+    })
+    obj.foo++
+    obj.foo++
+    obj.foo++
+    obj.foo++
+    expect(fn).toHaveBeenCalledTimes(0)
+    await nextTick()
+    expect(fn).toHaveBeenCalledTimes(4)
   })
-  const fn = vitest.fn()
-  watch(() => obj.foo, (value, oldValue, onCleanup) => {
-    fn(value, oldValue)
-  }, {
-    flush: 'post',
+
+  test('pre', async() => {
+    const obj = reactive({
+      foo: 1,
+    })
+    const fn = vitest.fn()
+    watch(() => obj.foo, (value, oldValue, onCleanup) => {
+      fn(value, oldValue)
+    }, {
+      flush: 'pre',
+    })
+    obj.foo++
+    obj.foo++
+    obj.foo++
+    obj.foo++
+    expect(fn).toHaveBeenCalledTimes(0)
+    await nextTick()
+    expect(fn).toHaveBeenCalledTimes(1)
   })
-  obj.foo++
-  obj.foo++
-  obj.foo++
-  obj.foo++
-  expect(fn).toHaveBeenCalledTimes(0)
-  await nextTick()
-  expect(fn).toHaveBeenCalledTimes(4)
 })
+
 test('onCleanup', async() => {
   const obj = reactive({
     foo: 1,

@@ -1,4 +1,4 @@
-import { isObject } from '@atomic-form/shared'
+import { hasChanged, isObject } from '@atomic-form/shared'
 
 interface ReactiveEffect extends Function{
   deps: Set<Function>[]
@@ -12,7 +12,7 @@ interface ReactiveEffectOptions {
   lazy?: boolean
 }
 
-export const jobQueue = new Set<ReactiveEffect>()
+export const jobQueue = new Set<() => void>()
 const p = Promise.resolve()
 let isFlushing = false
 export function flushJob() {
@@ -107,13 +107,15 @@ export function trigger(target: any, key: string | symbol) {
 
 export function reactive<T extends object>(target: T): any {
   return new Proxy(target, {
-    get(target, key) {
+    get(target, key, receiver) {
       track(target, key)
-      return isObject(target[key]) ? reactive(target[key]) : target[key]
+      return isObject(target[key]) ? reactive(target[key]) : Reflect.get(target, key, receiver)
     },
     set(target, key, value) {
+      const oldValue = target[key]
       target[key] = value
-      trigger(target, key)
+      if (hasChanged(value, oldValue))
+        trigger(target, key)
       return true
     },
   })

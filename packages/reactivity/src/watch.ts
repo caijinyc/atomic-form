@@ -1,5 +1,5 @@
 import { isArray, isFunction, isMap, isObject, isPlainObject, isSet } from '@atomic-form/shared'
-import { effect } from './reactive'
+import { effect, flushJob, jobQueue } from './reactive'
 import { isRef } from './ref'
 
 const enum ReactiveFlags {
@@ -84,6 +84,10 @@ export function watch(source: WatchSource | object, cb: WatchCallback, options: 
       if (options.flush === 'post') {
         const p = Promise.resolve()
         p.then(job)
+      }
+      else if (options.flush === 'pre') {
+        jobQueue.add(job)
+        flushJob()
       }
       else {
         job()
