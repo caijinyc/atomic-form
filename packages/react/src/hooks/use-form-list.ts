@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { FormAtom, ProcessChildValueType } from '@atomic-form/core/src/module/atom'
+import type { FormAtom, GetChildValue } from '@atomic-form/core/src/module/atom'
 import type { ElemOf } from '@atomic-form/core/src/type/util'
 import type { FormAtomArray } from '@atomic-form/core'
 import { useForceRender } from '../shared/use-force-render'
@@ -12,7 +12,7 @@ import { useForceRender } from '../shared/use-force-render'
  */
 export function useFormList<
   ValueType extends any[],
-  ElementValueType = ElemOf<ProcessChildValueType<ValueType>>,
+  ElementValueType = ElemOf<GetChildValue<ValueType>>,
 >(
   form: FormAtomArray<ValueType>,
 ): Array<ElementValueType extends any[] ? FormAtomArray<ElementValueType> : FormAtom<ElementValueType>> {

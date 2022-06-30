@@ -18,12 +18,14 @@ import { getState } from '../shared/get-state'
 import { buildWatchStateChange } from '../shared/watch-state'
 import { watch } from '../watch'
 import { buildGetAllChildren, buildSetState, generatePathString } from '../shared'
-import type { FormAtom, FormProps, ProcessChildValueType } from './atom'
+import type { FormAtom, FormProps, GetChildValue } from './atom'
 
 const countMap: Record<string, number> = {}
 let rootFormCount = 0
 
-export class FormAtomBase<V = any, PV = ProcessChildValueType<V>> {
+const ROOT_PATH = '__ROOT__'
+
+export class FormAtomBase<V = any, PV = GetChildValue<V>> {
   initialValue: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
   value: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
   label: Ref<State['label']> = ref(FORM_DEFAULT_STATE.label)
@@ -78,8 +80,8 @@ export class FormAtomBase<V = any, PV = ProcessChildValueType<V>> {
       this.value = ref(isValid(props.value) ? props.value : clone(this.initialValue.value))
 
       this.address = {
-        pathArray: ['__ROOT__'],
-        pathString: '__ROOT__',
+        pathArray: [ROOT_PATH],
+        pathString: ROOT_PATH,
       }
     }
 
