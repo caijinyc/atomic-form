@@ -1,3 +1,4 @@
+import type { Ref } from '@vue/reactivity'
 import { computed, ref } from '@vue/reactivity'
 import { Keys, clone, isValid } from '@atomic-form/shared'
 import { getIn, setIn } from '../shared/path'
@@ -17,24 +18,64 @@ import { getState } from '../shared/get-state'
 import { buildWatchStateChange } from '../shared/watch-state'
 import { watch } from '../watch'
 import { buildGetAllChildren, buildSetState, generatePathString } from '../shared'
-import { FormState } from './state'
 import type { FormAtom, FormProps, ProcessChildValueType } from './atom'
 
 const countMap: Record<string, number> = {}
 let rootFormCount = 0
 
-export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Value>> extends FormState<Value> {
-  private _watchStopFunList: Array<() => void> = []
-  children: Record<string, any> | Array<any> = {}
+export class FormAtomBase<V = any, PV = ProcessChildValueType<V>> {
+  /**
+   * when you set initialValue and value is invalid, it will be set to value
+   */
+  initialValue: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
+  /**
+   * just form value
+   * Tip:
+   *   Parent Atom value includes all children's value
+   *   so, if you set parent atom value, it will also set children's value
+   *   if you set children's value, it will also set parent atom value
+   */
+  value: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
+  label: Ref<State['label']> = ref(FORM_DEFAULT_STATE.label)
+  /**
+   * @default undefined
+   * if visible is undefined, it means it's always visible
+   * if visible is false, it means it's always invisible, Field will not render wrapped component
+   */
+  visible: Ref<State['visible']> = ref(FORM_DEFAULT_STATE.visible)
+  /**
+   * Field will
+   */
+  disabled: Ref<State['disabled']> = ref(FORM_DEFAULT_STATE.disabled)
+  /**
+   * @default false
+   * when React Field Component mounted, set to true
+   */
+  initialized: Ref<State['initialized']> = ref(FORM_DEFAULT_STATE.initialized)
+  /**
+   * @default false
+   * when user edit the form what is wrapped by Field, state `modified` will be set to true
+   * TIP: all parent form will also be modified
+   */
+  modified: Ref<State['modified']> = ref(FORM_DEFAULT_STATE.modified)
+  required: Ref<State['required']> = ref(FORM_DEFAULT_STATE.required)
+  rules: Ref<State['rules']> = ref(FORM_DEFAULT_STATE.rules)
+  error: Ref<State['error']> = ref(FORM_DEFAULT_STATE.error)
+  disableValidate: Ref<State['disableValidate']> = ref(FORM_DEFAULT_STATE.disableValidate)
+  // WIP
+  validating: Ref<State['validating']> = ref(FORM_DEFAULT_STATE.validating)
+  // component: Ref<IComponent | undefined> = ref(undefined);
+  // decorator: Ref<IComponent | undefined> = ref(undefined);
 
-  isRoot = false
   root: FormAtomBase
   parent: FormAtomBase
+  children: Record<string, any> | Array<any> = {}
+  isRoot = false
   address: Address
   uuid: string
+  #watchStopFunList: Array<() => void> = []
 
-  constructor(props: FormProps<Value>) {
-    super()
+  constructor(props: FormProps<V>) {
     if (props.rootNode && props.parentNode) {
       // it means this is a sub form
       this.root = props.rootNode
@@ -83,18 +124,18 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
     )
   }
 
-  get state(): State<ProcessedValue> {
+  get state(): State<PV> {
     return getState(this)
   }
 
   setState(
-    payload: PartialState<Value> | ((oldState: State<Value>) => PartialState<Value>),
+    payload: PartialState<V> | ((oldState: State<V>) => PartialState<V>),
   ): this {
     return buildSetState(this, payload)
   }
 
   setValue(
-    payload: Value | ((oldValue: Value) => Value),
+    payload: V | ((oldValue: V) => V),
   ): this {
     return buildSetState(this, {
       value: payload,
@@ -102,33 +143,33 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
   }
 
   watch<WithAllChildren extends boolean = false,
-    State = ResponseState<ProcessedValue, void, WithAllChildren>,
+    State = ResponseState<PV, void, WithAllChildren>,
   >(
-    callback: WatchStateCallback<ProcessedValue, void, WithAllChildren>,
+    callback: WatchStateCallback<PV, void, WithAllChildren>,
     options?: WatchStateOptions<WithAllChildren, State>,
   ): StopFun
 
   watch<StateType extends IStateType,
     WithAllChildren extends boolean = false,
-    State = ResponseState<ProcessedValue, StateType, WithAllChildren>,
+    State = ResponseState<PV, StateType, WithAllChildren>,
   >(
     stateType: StateType,
-    callback: WatchStateCallback<ProcessedValue, StateType, WithAllChildren>,
+    callback: WatchStateCallback<PV, StateType, WithAllChildren>,
     options?: WatchStateOptions<WithAllChildren, State>,
   ): StopFun
 
   watch<StateType extends IStateType[],
     WithAllChildren extends boolean = false,
-    State = ResponseState<ProcessedValue, StateType, WithAllChildren>,
+    State = ResponseState<PV, StateType, WithAllChildren>,
   >(
     stateType: StateType,
-    callback: WatchStateCallback<ProcessedValue, StateType, WithAllChildren>,
+    callback: WatchStateCallback<PV, StateType, WithAllChildren>,
     options?: WatchStateOptions<WithAllChildren, State>,
   ): StopFun
 
   watch(...params: any): any {
     const stop = buildWatchStateChange(this, ...params)
-    this._watchStopFunList.push(stop)
+    this.#watchStopFunList.push(stop)
     return stop
   }
 
@@ -145,12 +186,12 @@ export class FormAtomBase<Value = any, ProcessedValue = ProcessChildValueType<Va
   stopWatch(option?: {
     withAllChildren?: boolean
   }) {
-    this._watchStopFunList.forEach(stop => stop())
+    this.#watchStopFunList.forEach(stop => stop())
     if (option?.withAllChildren)
       this.allChildren.forEach(child => child.stopWatch({ withAllChildren: true }))
   }
 
-  initialize(originProps: PartialState<Value>) {
+  initialize(originProps: PartialState<V>) {
     const props = { ...originProps }
     if (
       isValid(props.initialValue)

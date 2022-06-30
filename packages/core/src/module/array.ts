@@ -3,29 +3,25 @@ import { clone, isArray } from '@atomic-form/shared'
 import type { ElemOf, ExcludeVoidType } from '../type/util'
 import type { WatchOptions } from '../watch'
 import { watch } from '../watch'
-import {
-  buildGetAllChildren,
-  buildNode,
-
-} from '../shared/internal'
-import type { AtomType, FormInstance } from '../type/form-type'
+import { buildGetAllChildren, buildNode } from '../shared'
+import type { FormInstance } from '../type'
 import { processFromAndToIndex, resetFormArrayChildrenAddress, spliceArrayChildren } from '../shared/array-util'
 import type { FormAtom, FormProps } from './atom'
 import { FormAtomBase } from './base'
 
 export class FormAtomArray<
-  Value = any,
-  ListItem = ElemOf<ExcludeVoidType<Value>>,
+  V = any,
+  ItemValue = ElemOf<ExcludeVoidType<V>>,
   // Array 中获取到的值可能会为 undefined
-  ProcessedListItem = ListItem | undefined,
-> extends FormAtomBase<Value> {
+  ProcessedItemValue = ItemValue | undefined,
+> extends FormAtomBase<V> {
   children: Array<FormAtomArray | FormAtom>
 
   constructor(props: FormProps) {
     super(props)
     this.children = shallowReactive([])
 
-    watch(() => this.value.value, (newValue) => {
+    watch(() => this.state.value, (newValue) => {
       if (isArray(newValue)) {
         const valueLen = newValue.length
         const childrenLen = this.children.length
@@ -58,11 +54,11 @@ export class FormAtomArray<
     )
   }
 
-  node(path: number): FormAtom<ProcessedListItem> {
+  node(path: number): FormAtom<ProcessedItemValue> {
     return buildNode(this, path)
   }
 
-  nodeArray(path: number): FormAtomArray<ProcessedListItem> {
+  nodeArray(path: number): FormAtomArray<ProcessedItemValue> {
     return buildNode(this, path, 'list')
   }
 
@@ -70,10 +66,10 @@ export class FormAtomArray<
     return buildGetAllChildren(this)
   }
 
-  splice(startIndex: number, deleteCount: number, ...items: ProcessedListItem[]) {
-    const clonedItems: ProcessedListItem[] = clone(items) || []
+  splice(startIndex: number, deleteCount: number, ...items: ProcessedItemValue[]) {
+    const clonedItems: ProcessedItemValue[] = clone(items) || []
     spliceArrayChildren(this, startIndex, deleteCount, ...clonedItems.map(v => ({ value: v })))
-    const value = clone(this.value.value) || []
+    const value = clone(this.state.value) || []
     value.splice(startIndex, deleteCount, ...items)
     this.setState(
       {
@@ -83,11 +79,11 @@ export class FormAtomArray<
     return this
   }
 
-  push(...itemsValue: ProcessedListItem[]) {
+  push(...itemsValue: ProcessedItemValue[]) {
     return this.splice(this.children.length, 0, ...itemsValue)
   }
 
-  insert(startIndex: number, ...items: ProcessedListItem[]) {
+  insert(startIndex: number, ...items: ProcessedItemValue[]) {
     return this.splice(startIndex, 0, ...items)
   }
 
@@ -96,7 +92,7 @@ export class FormAtomArray<
   }
 
   move(fromIndex: number, toIndex: number) {
-    const value = clone(this.value.value) || []
+    const value = clone(this.state.value) || []
     const { from, to } = processFromAndToIndex(value, fromIndex, toIndex)
 
     const formNode = this.children[fromIndex]

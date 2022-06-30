@@ -1,5 +1,4 @@
 import type { FormInstance, IStateType, ResponseState, WatchStateOptions } from '@atomic-form/core'
-import type { FormState } from '@atomic-form/core/src/module/state'
 import { isFunction, isPlainObject, isString } from '@atomic-form/shared'
 import { useEffect } from 'react'
 
@@ -28,8 +27,8 @@ export function useWatchForm<
 ): S
 
 export function useWatchForm(form: FormInstance<any>, ...params: any[]) {
-  const type: keyof FormState<any> | undefined = isString(params[0])
-    ? (params[0] as keyof FormState<any>)
+  const type: IStateType | undefined = isString(params[0])
+    ? (params[0] as IStateType)
     : undefined
   const callback: (res: any) => void = isFunction(params[0]) ? params[0] : params[1]
   const options: WatchStateOptions = isPlainObject(params[1])

@@ -3,6 +3,21 @@ import type { FormAtomBase } from '../module/base'
 
 export type IStateType = keyof State
 
+export const DEFINED_STATE_NAME: Array<IStateType> = [
+  'value',
+  'visible',
+  'label',
+  'rules',
+  'error',
+  'initialValue',
+  'disableValidate',
+  'disabled',
+  'initialized',
+  'validating',
+  'modified',
+  'required',
+]
+
 export const getState = <StateType extends IStateType | IStateType[]>(
   formAtom: FormAtomBase,
   stateType?: StateType,
@@ -24,19 +39,11 @@ export const getState = <StateType extends IStateType | IStateType[]>(
       return formAtom[stateType as IStateType].value
     }
   }
-  return {
-    value: formAtom.value.value,
-    visible: formAtom.visible.value,
-    label: formAtom.label.value,
-    rules: formAtom.rules.value,
-    error: formAtom.error.value,
-    initialValue: formAtom.initialValue.value,
-    disableValidate: formAtom.disableValidate.value,
-    disabled: formAtom.disabled.value,
-    initialized: formAtom.initialized.value,
-    validating: formAtom.validating.value,
-    modified: formAtom.modified.value,
-    required: formAtom.required.value,
-    // decorator: fc.decorator.value,
-  } as any
+
+  return DEFINED_STATE_NAME.reduce((res, name) => {
+    return {
+      ...res,
+      [name]: formAtom[name as IStateType].value,
+    }
+  }, {}) as any
 }
