@@ -1,6 +1,6 @@
-import { ComputedRef, Ref, isRef } from '@vue/reactivity'
-import { isArray, isMap, isObject, isPlainObject, isSet } from '@atomic-form/shared'
+import { isArray, isFunction, isMap, isObject, isPlainObject, isSet } from '@atomic-form/shared'
 import { effect } from './reactive'
+import { isRef } from './ref'
 
 const enum ReactiveFlags {
   SKIP = '__v_skip',
@@ -37,40 +37,62 @@ function traverse(value: unknown, seen: Set<unknown> = new Set()) {
   return value
 }
 
+type OnCleanup = (cleanupFn: () => void) => void
 type InvalidateCbRegistrar = (cb: () => void) => void
+
 export type WatchSource<T = any> = (() => T)
 export type WatchStopHandle = () => void
+export type WatchCallback<V = any, OV = any> = (
+  value: V,
+  oldValue: OV,
+  onCleanup: OnCleanup
+) => any
 
-declare function watch<T>(getter: () => T, cb: (newValue: T,) => void, options: {
-  immediate?: boolean
-}): () => void
+export interface WatchOptionsBase {
+  flush?: 'pre' | 'post' | 'sync'
+}
 
-export function watch(getter: () => unknown, cb: () => void, options: { immediate?: boolean } = {}) {
+export interface WatchOptions<Immediate = boolean> extends WatchOptionsBase {
+  immediate?: Immediate
+  deep?: boolean
+}
+
+export function watch(source: WatchSource | object, cb: WatchCallback, options: WatchOptions = {}) {
+  let getter: Function
+
+  if (isFunction(source))
+    getter = source
+  else
+    getter = () => traverse(source)
+
+  let oldValue: any, newValue: any
+  let cleanup: () => void
+  const onInvalidate: InvalidateCbRegistrar = (fn: () => void) => {
+    cleanup = fn
+  }
+
+  const job = () => {
+    newValue = effectFn()
+    if (cleanup) cleanup()
+    cb(newValue, oldValue, onInvalidate)
+    oldValue = newValue
+  }
+
   const effectFn = effect(getter, {
     lazy: true,
-    // onTrack: () => {
-    //   // console.log('onTrack')
-    // },
-    // onTrigger: () => {
-    //   // console.log('onTrigger')
-    // },
     scheduler: () => {
-      // console.log('scheduler')
+      if (options.flush === 'post') {
+        const p = Promise.resolve()
+        p.then(job)
+      }
+      else {
+        job()
+      }
     },
   })
 
-  // initial run
-  if (cb) {
-    if (options.immediate)
-      cb()
-    else
-      effect.run()
-  }
-  else {
-    effect.run()
-  }
-
-  return () => {
-    effect.stop()
-  }
+  if (options.immediate)
+    job()
+  else
+    oldValue = effectFn()
 }

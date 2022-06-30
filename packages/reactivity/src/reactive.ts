@@ -1,4 +1,4 @@
-import { isValid } from '@atomic-form/shared'
+import { isObject } from '@atomic-form/shared'
 
 interface ReactiveEffect extends Function{
   deps: Set<Function>[]
@@ -105,11 +105,11 @@ export function trigger(target: any, key: string | symbol) {
   }
 }
 
-export function reactive(target: any) {
+export function reactive<T extends object>(target: T): any {
   return new Proxy(target, {
     get(target, key) {
       track(target, key)
-      return target[key]
+      return isObject(target[key]) ? reactive(target[key]) : target[key]
     },
     set(target, key, value) {
       target[key] = value
