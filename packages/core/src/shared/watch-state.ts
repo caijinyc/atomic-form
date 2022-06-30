@@ -1,5 +1,5 @@
 import { isFunction, isPlainObject } from '@atomic-form/shared'
-import type { StopFun, WatchStateOptions } from '../type'
+import type { HandleStop, WatchStateOptions } from '../type'
 import { watch } from '../watch'
 import type { FormAtomBase } from '../module/base'
 import type { IStateType } from './get-state'
@@ -9,7 +9,7 @@ const DEFAULT_OPTIONS: WatchStateOptions = {
   compare: true,
 }
 
-export const buildWatchStateChange = (form: FormAtomBase, ...params: any): StopFun => {
+export const buildWatchStateChange = (form: FormAtomBase, ...params: any): HandleStop => {
   const stateType: IStateType | IStateType[] = isFunction(params[0]) ? undefined : params[0]
   const options: WatchStateOptions = {
     ...DEFAULT_OPTIONS,

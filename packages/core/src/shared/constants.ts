@@ -12,7 +12,6 @@ export const FORM_DEFAULT_STATE: Omit<State, 'value'> = {
   label: '',
   initialized: false,
   validating: false,
-
   modified: false,
   required: undefined,
   rules: undefined,
