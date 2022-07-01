@@ -20,10 +20,20 @@ import { watch } from '../watch'
 import { buildGetAllChildren, buildSetState, generatePathString } from '../shared'
 import type { FormAtom, FormProps, GetChildValue } from './atom'
 
+const ROOT_PATH = '__ROOT__'
 const countMap: Record<string, number> = {}
 let rootFormCount = 0
-
-const ROOT_PATH = '__ROOT__'
+function genFormRootUUID() {
+  return `ROOT-${rootFormCount++}`
+}
+function genFormNodeUUID(form: FormAtomBase) {
+  const rootUID = form.root.uuid
+  if (countMap[rootUID])
+    countMap[rootUID]++
+  else
+    countMap[rootUID] = 1
+  return `${rootUID}-${countMap[rootUID]}`
+}
 
 export class FormAtomBase<V = any, PV = GetChildValue<V>> {
   initialValue: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
@@ -55,7 +65,7 @@ export class FormAtomBase<V = any, PV = GetChildValue<V>> {
       // it means this is a sub form
       this.root = props.rootNode
       this.parent = props.parentNode
-      this.uuid = `${this.root.uuid}-${generateFormNodeUUID(this)}`
+      this.uuid = genFormNodeUUID(this)
 
       const pathArray = [...this.parent.address.pathArray, props.path === undefined ? '' : props.path]
       this.address = {
@@ -73,7 +83,7 @@ export class FormAtomBase<V = any, PV = GetChildValue<V>> {
     else {
       // root form, must initialize the root form
       this.isRoot = true
-      this.uuid = `ROOT-${rootFormCount++}`
+      this.uuid = genFormRootUUID()
       this.root = this
       this.parent = this
       this.initialValue = ref(isValid(props.initialValue) ? props.initialValue : FORM_DEFAULT_STATE.initialValue)
@@ -182,13 +192,4 @@ export class FormAtomBase<V = any, PV = GetChildValue<V>> {
       },
     )
   }
-}
-
-function generateFormNodeUUID(form: FormAtomBase) {
-  if (countMap[form.root.uuid])
-    countMap[form.root.uuid]++
-  else
-    countMap[form.root.uuid] = 1
-
-  return countMap[form.root.uuid]
 }
