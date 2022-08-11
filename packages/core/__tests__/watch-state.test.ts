@@ -89,7 +89,7 @@ test('should works stop watch', () => {
   expect(fn).toHaveBeenCalledTimes(0)
 })
 
-test('should works stop watch withAllChildren', () => {
+test('should works stop watch withAllChildNodes', () => {
   const form = new FormAtom<{
     foo: {
       name: string
@@ -116,7 +116,7 @@ test('should works stop watch withAllChildren', () => {
   expect(triggered1).toBe(1)
   expect(triggered2).toBe(1)
 
-  form.stopWatch({ withAllChildren: true })
+  form.stopWatch({ withAllChildNodes: true })
   name.setState({ value: 'jerry3' })
 
   expect(triggered1).toBe(1)

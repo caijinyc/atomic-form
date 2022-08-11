@@ -116,7 +116,7 @@ export type WatchStateOptions<W extends boolean = false, State = any> = {
    * @default false
    * 观察所有子节点 state 数据变更
    */
-  withAllChildren?: W
+  withAllChildNodes?: W
   /**
    * TODO WIP
    * @default true

@@ -10,13 +10,13 @@ import { useForceRender } from '../shared/use-force-render'
  */
 export function useFormState<
   V,
-  WithAllChildren extends boolean = false,
-  S = ResponseState<V, void, WithAllChildren>,
->(form: FormInstance<V>, options?: WatchStateOptions<WithAllChildren>): S
+  W extends boolean = false,
+  S = ResponseState<V, void, W>,
+>(form: FormInstance<V>, options?: WatchStateOptions<W>): S
 
 /**
  * return state of the form by type
- * if withAllChildren is true, return whole state of the form + all children's state
+ * if withAllChildNodes is true, return whole state of the form + all children's state
  * @param form
  * @param type
  * @param options
@@ -24,12 +24,12 @@ export function useFormState<
 export function useFormState<
   V,
   T extends IStateType,
-  WithAllChildren extends boolean = false,
-  S = ResponseState<V, T, WithAllChildren>,
+  W extends boolean = false,
+  S = ResponseState<V, T, W>,
 >(
   form: FormInstance<V>,
   type: T,
-  options?: WatchStateOptions<WithAllChildren, S>,
+  options?: WatchStateOptions<W, S>,
 ): S
 
 export function useFormState(form: FormInstance, ...params: any[]): any {
@@ -45,8 +45,8 @@ export function useFormState(form: FormInstance, ...params: any[]): any {
   const render = useForceRender()
 
   // const getState = () =>
-  //   options.withAllChildren
-  //     ? form.getStateWithAllChildren(type)
+  //   options.withAllChildNodes
+  //     ? form.getStateWithAllChildNodes(type)
   //     : type
   //       ? isArr(type)
   //         ? pick(form.state, type)
@@ -54,7 +54,7 @@ export function useFormState(form: FormInstance, ...params: any[]): any {
   //       : form.state
 
   /**
-   * TODO withAllChildren is not working
+   * TODO withAllChildNodes is not working
    */
   const getState = () => type
     ? isArray(type)
@@ -83,7 +83,7 @@ export function useFormState(form: FormInstance, ...params: any[]): any {
     return () => {
       stop()
     }
-  }, [form.uuid, options.sync, options.withAllChildren, ...[isArray(type) ? undefined : type]])
+  }, [form.uuid, options.sync, options.withAllChildNodes, ...[isArray(type) ? undefined : type]])
 
   return state.current
 }

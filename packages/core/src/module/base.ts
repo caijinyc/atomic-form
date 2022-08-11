@@ -127,29 +127,29 @@ export class FormAtomBase<V = any, PV = GetChildValue<V>> {
     })
   }
 
-  watch<WithAllChildren extends boolean = false,
-    State = ResponseState<PV, void, WithAllChildren>,
+  watch<W extends boolean = false,
+    State = ResponseState<PV, void, W>,
   >(
-    callback: WatchStateCallback<PV, void, WithAllChildren>,
-    options?: WatchStateOptions<WithAllChildren, State>,
+    callback: WatchStateCallback<PV, void, W>,
+    options?: WatchStateOptions<W, State>,
   ): HandleStop
 
   watch<StateType extends IStateType,
-    WithAllChildren extends boolean = false,
-    State = ResponseState<PV, StateType, WithAllChildren>,
+    W extends boolean = false,
+    State = ResponseState<PV, StateType, W>,
   >(
     stateType: StateType,
-    callback: WatchStateCallback<PV, StateType, WithAllChildren>,
-    options?: WatchStateOptions<WithAllChildren, State>,
+    callback: WatchStateCallback<PV, StateType, W>,
+    options?: WatchStateOptions<W, State>,
   ): HandleStop
 
   watch<StateType extends IStateType[],
-    WithAllChildren extends boolean = false,
-    State = ResponseState<PV, StateType, WithAllChildren>,
+    W extends boolean = false,
+    State = ResponseState<PV, StateType, W>,
   >(
     stateType: StateType,
-    callback: WatchStateCallback<PV, StateType, WithAllChildren>,
-    options?: WatchStateOptions<WithAllChildren, State>,
+    callback: WatchStateCallback<PV, StateType, W>,
+    options?: WatchStateOptions<W, State>,
   ): HandleStop
 
   watch(...params: any): any {
@@ -169,11 +169,11 @@ export class FormAtomBase<V = any, PV = GetChildValue<V>> {
   }
 
   stopWatch(option?: {
-    withAllChildren?: boolean
+    withAllChildNodes?: boolean
   }) {
     this.#watchStopFunList.forEach(stop => stop())
-    if (option?.withAllChildren)
-      this.allChildren.forEach(child => child.stopWatch({ withAllChildren: true }))
+    if (option?.withAllChildNodes)
+      this.allChildren.forEach(child => child.stopWatch({ withAllChildNodes: true }))
   }
 
   initialize(originProps: PartialState<V>) {

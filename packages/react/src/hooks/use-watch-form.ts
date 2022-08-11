@@ -7,9 +7,9 @@ import { useEffect } from 'react'
  */
 export function useWatchForm<
   V,
-  WithAllChildren extends boolean = false,
-  S = ResponseState<V, void, WithAllChildren>,
->(form: FormInstance<V>, cb: (res: S) => void, options?: WatchStateOptions<WithAllChildren>): S
+  W extends boolean = false,
+  S = ResponseState<V, void, W>,
+>(form: FormInstance<V>, cb: (res: S) => void, options?: WatchStateOptions<W>): S
 
 /**
  * watch the state of the form by type, when state changed will trigger the callback
@@ -17,13 +17,13 @@ export function useWatchForm<
 export function useWatchForm<
   V,
   T extends IStateType,
-  WithAllChildren extends boolean = false,
-  S = ResponseState<V, T, WithAllChildren>,
+  W extends boolean = false,
+  S = ResponseState<V, T, W>,
 >(
   form: FormInstance<V>,
   type: T,
   cb: (res: S) => void,
-  options?: WatchStateOptions<WithAllChildren, S>,
+  options?: WatchStateOptions<W, S>,
 ): S
 
 export function useWatchForm(form: FormInstance<any>, ...params: any[]) {
@@ -44,5 +44,5 @@ export function useWatchForm(form: FormInstance<any>, ...params: any[]) {
     return () => {
       stop()
     }
-  }, [type, form.uuid, options.sync, options.withAllChildren])
+  }, [type, form.uuid, options.sync, options.withAllChildNodes])
 }
