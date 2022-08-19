@@ -19,6 +19,6 @@
   },
   "dependencies": {
     "@atomic-form/shared": "0.0.7",
-    "@vue/reactivity": "^3.2.37"
+    "@vue/reactivity": "^3.2.27"
   }
 }
