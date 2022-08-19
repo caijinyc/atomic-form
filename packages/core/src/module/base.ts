@@ -36,19 +36,19 @@ function genFormNodeUUID(form: FormAtomBase) {
 }
 
 export class FormAtomBase<V = any, PV = GetChildValue<V>> {
-  initialValue: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
-  value: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
-  label: Ref<State['label']> = ref(FORM_DEFAULT_STATE.label)
-  visible: Ref<State['visible']> = ref(FORM_DEFAULT_STATE.visible)
-  disabled: Ref<State['disabled']> = ref(FORM_DEFAULT_STATE.disabled)
-  initialized: Ref<State['initialized']> = ref(FORM_DEFAULT_STATE.initialized)
-  modified: Ref<State['modified']> = ref(FORM_DEFAULT_STATE.modified)
-  required: Ref<State['required']> = ref(FORM_DEFAULT_STATE.required)
-  rules: Ref<State['rules']> = ref(FORM_DEFAULT_STATE.rules)
-  error: Ref<State['error']> = ref(FORM_DEFAULT_STATE.error)
-  disableValidate: Ref<State['disableValidate']> = ref(FORM_DEFAULT_STATE.disableValidate)
+  private initialValue: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
+  private value: Ref<V> = ref(FORM_DEFAULT_STATE.initialValue)
+  private label: Ref<State['label']> = ref(FORM_DEFAULT_STATE.label)
+  private visible: Ref<State['visible']> = ref(FORM_DEFAULT_STATE.visible)
+  private disabled: Ref<State['disabled']> = ref(FORM_DEFAULT_STATE.disabled)
+  private initialized: Ref<State['initialized']> = ref(FORM_DEFAULT_STATE.initialized)
+  private modified: Ref<State['modified']> = ref(FORM_DEFAULT_STATE.modified)
+  private required: Ref<State['required']> = ref(FORM_DEFAULT_STATE.required)
+  private rules: Ref<State['rules']> = ref(FORM_DEFAULT_STATE.rules)
+  private error: Ref<State['error']> = ref(FORM_DEFAULT_STATE.error)
+  private disableValidate: Ref<State['disableValidate']> = ref(FORM_DEFAULT_STATE.disableValidate)
   // WIP
-  validating: Ref<State['validating']> = ref(FORM_DEFAULT_STATE.validating)
+  private validating: Ref<State['validating']> = ref(FORM_DEFAULT_STATE.validating)
   // component: Ref<IComponent | undefined> = ref(undefined);
   // decorator: Ref<IComponent | undefined> = ref(undefined);
 
